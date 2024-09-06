@@ -1,2 +1,4 @@
 # rpg-master-support
-Help D&amp;D master's to calculate skills tests and initiative
+Help Dungeons master's (3.5 systems) to calculate skills tests and initiative
+
+TODO: split initial code into scripts, html and CSS features. Also will add unit tests
