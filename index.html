@@ -58,10 +58,8 @@
         <button onclick="openTab('playersTab')"><i class="fas fa-users"></i>Jogadores</button>
     </div>
 
-    <!-- Game Section -->
     <div id="skillTab" class="tab">
       
-        <!-- Perícia Test Section -->
         <h3></h3>
         <label for="skillName">Perícia:</label>
         <select id="skillName">
@@ -81,7 +79,6 @@
         <div id="gameResult" class="result"></div>
     </div>
 
-    <!-- Players Section -->
     <div id="playersTab" class="tab">
         <h3></h3>
         <label for="playerName">Nome:</label>
@@ -89,7 +86,6 @@
         <label for="initiative">Iniciativa:</label>
         <input type="number" id="initiative" placeholder="Ex: 5">
         
-        <!-- Predefined skills -->
         <h3>Perícias:</h3>
         <label for="spot">Observar:</label>
         <input type="number" id="spot" placeholder="Ex: 3"><br>
@@ -115,7 +111,6 @@
         <ul id="playerList"></ul>
     </div>
 
-    <!-- Initiative Section -->
     <div id="initiativeTab" class="tab">
         <h3></h3>
         <label for="monsterCount">Quantidade de Monstros:</label>
@@ -126,6 +121,7 @@
 
     <script>
         let players = [];
+        let currentInitiative = []; 
 
         // Função para mudar de aba
         function openTab(tabId) {
@@ -135,7 +131,20 @@
             document.getElementById(tabId).classList.add('active');
         }
 
-        // Adicionar novo player
+        function clearInputs() {
+            document.getElementById('playerName').value = '';
+            document.getElementById('initiative').value = '';
+            document.getElementById('spot').value = '';
+            document.getElementById('listen').value = '';
+            document.getElementById('search').value = '';
+            document.getElementById('senseMotive').value = '';
+            document.getElementById('hide').value = '';
+            document.getElementById('moveSilently').value = '';
+            document.getElementById('appraise').value = '';
+            document.getElementById('survival').value = '';
+            document.getElementById('balance').value = '';
+        }
+
         function addPlayer() {
             const name = document.getElementById('playerName').value;
             const initiative = parseInt(document.getElementById('initiative').value);
@@ -159,23 +168,7 @@
                 alert("Por favor, preencha os campos corretamente.");
             }
         }
-
-        // Limpar campos de input
-        function clearInputs() {
-            document.getElementById('playerName').value = '';
-            document.getElementById('initiative').value = '';
-            document.getElementById('spot').value = '';
-            document.getElementById('listen').value = '';
-            document.getElementById('search').value = '';
-            document.getElementById('senseMotive').value = '';
-            document.getElementById('hide').value = '';
-            document.getElementById('moveSilently').value = '';
-            document.getElementById('appraise').value = '';
-            document.getElementById('survival').value = '';
-            document.getElementById('balance').value = '';
-        }
-
-        // Executar o teste de perícia
+        
         function runTest() {
             const skillName = document.getElementById('skillName').value.toLowerCase();
             const challengeValue = parseInt(document.getElementById('challengeValue').value);
@@ -194,31 +187,27 @@
             displayResult(result);
         }
 
-
-        // Calcular iniciativa para jogadores e monstros
         function calculateInitiative() {
             const monsterCount = parseInt(document.getElementById('monsterCount').value);
             const monsters = [];
             for (let i = 1; i <= monsterCount; i++) {
-                monsters.push({ nome: `Monstro ${i}`, iniciativa: Math.floor(Math.random() * 20) + 1 });
+                monsters.push({ nome: `Monstro ${i}`, iniciativa: 1 });
             }
 
             const allCombatants = [...players, ...monsters];
 
-            // Verifique se há combatentes (jogadores ou monstros)
-            if (allCombatants.length === 0) {
-                alert('Nenhum jogador ou monstro foi adicionado!');
-                return;
-            }
+            currentInitiative = allCombatants.map(combatant => {
+                return { 
+                nome: combatant.nome, 
+                currentInitiative: combatant.iniciativa + Math.floor(Math.random() * 20) + 1 
+                };
+            });
 
-            // Ordenar a lista por iniciativa
-            allCombatants.sort((a, b) => b.iniciativa - a.iniciativa);
+            currentInitiative.sort((a, b) => b.currentInitiative - a.currentInitiative);
 
-            // Exibir o resultado na seção de iniciativa
-            displayInitiative(allCombatants);
+            displayInitiative(currentInitiative); 
         }
 
-        // Exibir o resultado do teste
         function displayResult(result) {
             const resultDiv = document.getElementById('gameResult');
             resultDiv.innerHTML = '';
@@ -229,19 +218,17 @@
             });
         }
 
-        // Exibir a iniciativa de todos
         function displayInitiative(combatants) {
-            const initiativeDiv = document.getElementById('initiativeResult');
-            initiativeDiv.innerHTML = '';  // Limpa o conteúdo anterior
+        const initiativeDiv = document.getElementById('initiativeResult');
+        initiativeDiv.innerHTML = ''; 
 
-            combatants.forEach(combatant => {
-                const combatantText = document.createElement('p');
-                combatantText.textContent = `${combatant.nome}: ${combatant.iniciativa}`;
-                initiativeDiv.appendChild(combatantText);
-            });
+        combatants.forEach(combatant => {
+            const combatantText = document.createElement('p');
+            combatantText.textContent = `${combatant.nome}: ${combatant.currentInitiative}`; 
+            initiativeDiv.appendChild(combatantText);
+        });
         }
 
-        // Exibir lista de jogadores
         function displayPlayers() {
             const playerList = document.getElementById('playerList');
             playerList.innerHTML = '';
