@@ -32,12 +32,12 @@
         .tab input[type="text"] {
             width: 120px;
             padding: 5px;
-            margin-bottom: 5;
+            margin-bottom: 5px;
         }
         .tab input[type="number"] {
-            width: 40px;
+            width: 60px;
             padding: 5px;
-            margin-bottom: 5;
+            margin-bottom: 5px;
         }
         .tab.active {
             display: block;
@@ -45,6 +45,57 @@
         .result {
             margin-top: 10px;
             color: green;
+        }
+        .form-group {
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 7px;
+        }
+        .form-group label {
+            width: 150px;
+            text-align: left;
+            padding-right: 7px;
+        }
+        .form-group input {
+            padding-left: 7px;
+            text-align: left;
+        }
+        .remove-btn {
+            padding: 5px;
+            cursor: pointer;
+            align-items: center;
+        }
+        .remove-btn i {
+            margin-right: 5px;
+        }
+        #playerList {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        #playerList li {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 150px;
+            padding: 5px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .skill-list {
+            display: grid;
+            grid-template-columns: auto 1fr; 
+            gap: 5px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .skill-list span {
+            margin-left: 5px;
+            text-align: left;
         }
     </style>
 </head>
@@ -81,32 +132,55 @@
 
     <div id="playersTab" class="tab">
         <h3></h3>
-        <label for="playerName">Nome:</label>
-        <input type="text" id="playerName" placeholder="Ex: teste"><br><br>
-        <label for="initiative">Iniciativa:</label>
-        <input type="number" id="initiative" placeholder="Ex: 5">
-        
-        <h3>Perícias:</h3>
-        <label for="spot">Observar:</label>
-        <input type="number" id="spot" placeholder="Ex: 3"><br>
-        <label for="listen">Ouvir:</label>
-        <input type="number" id="listen" placeholder="Ex: 3"><br>
-        <label for="search">Procurar:</label>
-        <input type="number" id="search" placeholder="Ex: 3"><br>
-        <label for="senseMotive">Sentir Motivação:</label>
-        <input type="number" id="senseMotive" placeholder="Ex: 3"><br>
-        <label for="hide">Esconder-se:</label>
-        <input type="number" id="hide" placeholder="Ex: 3"><br>
-        <label for="moveSilently">Furtividade:</label>
-        <input type="number" id="moveSilently" placeholder="Ex: 3"><br>
-        <label for="appraise">Avaliação:</label>
-        <input type="number" id="appraise" placeholder="Ex: 3"><br>
-        <label for="survival">Sobrevivência:</label>
-        <input type="number" id="survival" placeholder="Ex: 3"><br>
-        <label for="balance">Equilíbrio:</label>
-        <input type="number" id="balance" placeholder="Ex: 3"><br>
+        <div class="form-group">
+            <label for="playerName">Nome:</label>
+            <input type="text" id="playerName" placeholder="Ex: teste"><br><br>
+        </div>
+        <div class="form-group">
+            <label for="initiative">Iniciativa:</label>
+            <input type="number" id="initiative" placeholder="Ex: 5">
+        </div>
 
-        <button onclick="addPlayer()">Adicionar  <i class="fa-solid fa-user-plus"></i></button>
+        <h3>Perícias:</h3>
+
+        <div class="form-group">
+            <label for="spot">Observar:</label>
+            <input type="number" id="spot" placeholder="Ex: 3">
+        </div>
+        <div class="form-group">
+            <label for="listen">Ouvir:</label>
+            <input type="number" id="listen" placeholder="Ex: 3">
+        </div>
+        <div class="form-group">
+            <label for="search">Procurar:</label>
+            <input type="number" id="search" placeholder="Ex: 3">
+        </div>
+        <div class="form-group">
+            <label for="senseMotive">Sentir Motivação:</label>
+            <input type="number" id="senseMotive" placeholder="Ex: 3">
+        </div>
+        <div class="form-group">
+            <label for="hide">Esconder-se:</label>
+            <input type="number" id="hide" placeholder="Ex: 3">
+        </div>
+        <div class="form-group">
+            <label for="moveSilently">Furtividade:</label>
+            <input type="number" id="moveSilently" placeholder="Ex: 3">
+        </div>
+        <div class="form-group">
+            <label for="appraise">Avaliação:</label>
+            <input type="number" id="appraise" placeholder="Ex: 3">
+        </div>
+        <div class="form-group">
+            <label for="survival">Sobrevivência:</label>
+            <input type="number" id="survival" placeholder="Ex: 3">
+        </div>
+        <div class="form-group">
+            <label for="balance">Equilíbrio:</label>
+            <input type="number" id="balance" placeholder="Ex: 3">
+        </div>
+
+        <button onclick="addPlayer()">Adicionar  <i class="fas fa-user-plus"></i></button>
 
         <ul id="playerList"></ul>
     </div>
@@ -169,6 +243,10 @@
             }
         }
         
+        function randomDice(){
+            return Math.floor(Math.random() * 20) + 1 
+        }
+
         function runTest() {
             const skillName = document.getElementById('skillName').value.toLowerCase();
             const challengeValue = parseInt(document.getElementById('challengeValue').value);
@@ -176,12 +254,15 @@
 
             players.forEach(player => {
                 let success = false;
+                let finalValue = player.pericias[skillName] + randomDice();
+
                 if (player.pericias[skillName] !== undefined) {
-                    if (player.pericias[skillName] >= challengeValue) {
+                    if (finalValue >= challengeValue) {
                         success = true;
                     }
                 }
-                result.push({ nome: player.nome, sucesso: success });
+
+                result.push({ nome: player.nome, sucesso: success, valor: finalValue });
             });
 
             displayResult(result);
@@ -198,8 +279,8 @@
 
             currentInitiative = allCombatants.map(combatant => {
                 return { 
-                nome: combatant.nome, 
-                currentInitiative: combatant.iniciativa + Math.floor(Math.random() * 20) + 1 
+                    nome: combatant.nome, 
+                    currentInitiative: combatant.iniciativa + randomDice()
                 };
             });
 
@@ -213,7 +294,7 @@
             resultDiv.innerHTML = '';
             result.forEach(r => {
                 const resultText = document.createElement('p');
-                resultText.textContent = `${r.nome}: ${r.sucesso ? 'true' : 'false'}`;
+                resultText.textContent = `(${r.valor}) - ${r.nome}: ${r.sucesso ? 'true' : 'false'}`;
                 resultDiv.appendChild(resultText);
             });
         }
@@ -232,11 +313,47 @@
         function displayPlayers() {
             const playerList = document.getElementById('playerList');
             playerList.innerHTML = '';
-            players.forEach(player => {
+            players.forEach((player, index) => {
                 const listItem = document.createElement('li');
-                listItem.textContent = `${player.nome} (Iniciativa: ${player.iniciativa})`;
+                
+                const playerName = document.createElement('p');
+                playerName.textContent = player.nome;
+                listItem.appendChild(playerName);
+
+                const playerInitiative = document.createElement('p');
+                playerInitiative.textContent = `Iniciativa: ${player.iniciativa}`;
+                listItem.appendChild(playerInitiative);
+
+                const skillList = document.createElement('div');
+                skillList.classList.add('skill-list');
+                
+                for (const [skill, value] of Object.entries(player.pericias)) {
+                    if (value !== null && !isNaN(value)) {
+                        const skillName = document.createElement('span');
+                        skillName.textContent = skill;
+                        const skillValue = document.createElement('span');
+                        skillValue.textContent = value;
+                        skillList.appendChild(skillName);
+                        skillList.appendChild(skillValue);
+                    }
+                }
+
+                listItem.appendChild(skillList);
+
+                const removeButton = document.createElement('button');
+                removeButton.classList.add('remove-btn');
+                removeButton.innerHTML = '<i class="fa-solid fa-user-slash"></i> Remover';
+                removeButton.onclick = () => removePlayer(index);
+
+                listItem.appendChild(removeButton);
                 playerList.appendChild(listItem);
             });
+        }
+
+
+        function removePlayer(index) {
+            players.splice(index, 1); 
+            displayPlayers();
         }
     </script>
 
