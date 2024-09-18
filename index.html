@@ -53,7 +53,7 @@
             margin-bottom: 5px;
         }
         .tab.active {
-            display: block;
+            display: inline-grid;
         }
         .result {
             margin-top: 10px;
@@ -63,15 +63,15 @@
         .form-group {
             display: flex;
             justify-content: flex-start;
-            margin-bottom: 7px;
+            margin-bottom: 4px;
         }
         .form-group label {
             width: 150px;
             text-align: left;
-            padding-right: 7px;
+            padding-right: 4px;
         }
         .form-group input {
-            padding-left: 7px;
+            padding-left: 4px;
             text-align: left;
         }
         .remove-btn {
@@ -100,12 +100,12 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        #initiativePlayers {
+        #actionPlayers {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
         }
-        #initiativePlayers li {
+        #actionPlayers li {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -118,12 +118,12 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        #initiativeMonsters {
+        #actionMonsters {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
         }
-        #initiativeMonsters li {
+        #actionMonsters li {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -199,32 +199,43 @@
 
         <button class="tab-btn" onclick="openTab('skillTab', this)"><i class="fas fa-scroll"></i>Perícia</button>
 
-        <button class="tab-btn" onclick="openTab('initiativeTab', this)"><i class="fas fa-bolt"></i>Iniciativa</button>
+        <button class="tab-btn" onclick="openTab('actionTab', this)"><i class="fas fa-bolt"></i>Iniciativa</button>
     </div>
 
     <div id="skillTab" class="tab">
-      
-        <h3></h3>
-        <label for="skillName">Perícia:</label>
-        <select id="skillName">
-            <option value="observar">Observar</option>
-            <option value="ouvir">Ouvir</option>
-            <option value="procurar">Procurar</option>
-            <option value="sentir motivação">Sentir Motivação</option>
-            <option value="esconder-se">Esconder-se</option>
-            <option value="furtividade">Furtividade</option>
-            <option value="avaliação">Avaliação</option>
-            <option value="sobrevivência">Sobrevivência</option>
-            <option value="equilíbrio">Equilíbrio</option>
-        </select>
-        <label for="challengeValue">Valor de Desafio:</label>
-        <input type="number" id="challengeValue" placeholder="Ex: 2">
-        <button onclick="runTest()">Executar Teste  <i class="fa-solid fa-play"></i></button>
-        <div id="gameResult" class="result"></div>
+
+        <div class="tab-box">
+            <div class="form-group">
+                <label for="skillName">Perícia:</label>
+                <select id="skillName">
+                    <option value="observar">Observar</option>
+                    <option value="ouvir">Ouvir</option>
+                    <option value="procurar">Procurar</option>
+                    <option value="sentir motivação">Sentir Motivação</option>
+                    <option value="esconder-se">Esconder-se</option>
+                    <option value="furtividade">Furtividade</option>
+                    <option value="avaliação">Avaliação</option>
+                    <option value="sobrevivência">Sobrevivência</option>
+                    <option value="equilíbrio">Equilíbrio</option>
+                </select>
+            </div>
+
+            <br>
+            <div class="form-group">
+                <label for="challengeValue">Valor de Desafio:</label>
+                <input type="number" id="challengeValue" placeholder="Ex: 2">
+            </div>
+
+            <div class="form-group">
+                <button onclick="runSkillTest()">Executar Teste  <i class="fa-solid fa-play"></i></button>
+            </div>
+        </div>
+
+        <div id="gameResult" class="result"></div>            
+
     </div>
 
-    <div id="initiativeTab" class="tab">
-        <h3>Iniciativa</h3>
+    <div id="actionTab" class="tab">
 
         <div class="tab-box">
             <h4>Adicionar Monstros</h4>
@@ -235,8 +246,8 @@
             </div>
 
             <div class="form-group">
-                <label for="monsterInitiative">Iniciativa:</label>
-                <input type="number" id="monsterInitiative" placeholder="Ex: 5">
+                <label for="monsteraction">Iniciativa:</label>
+                <input type="number" id="monsteraction" placeholder="Ex: 5">
             </div>
             <button onclick="addSpecificMonster()">Adicionar  <i class="fas fa-user-plus"></i></button>
 
@@ -250,27 +261,39 @@
 
         </div>
 
-        <br>
-        <button onclick="calculateInitiative()">Calcular Iniciativa  <i class="fa-solid fa-play"></i></button>
+        <div class="tab-box">
 
-        <div id="initiativeResult" class="result"></div>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="counterCheckbox" onclick="clearRoundCounter()"> Contar rodadas
+                </label>
 
-        <ul id="initiativePlayers"></ul>
+                <input type="number" id="clickCounter" value="0" readonly disabled>
+            </div>
 
-        <ul id="initiativeMonsters"></ul>
+            <button onclick="runActionTest()">Calcular Iniciativa  <i class="fa-solid fa-play"></i></button>
+        </div>
+        
+
+        <div id="actionResult" class="result"></div>
+
+        <ul id="actionPlayers"></ul>
+
+        <ul id="actionMonsters"></ul>
     </div>
 
     <div id="playersTab" class="tab">
-        <h3>Adicionar Jogadores</h3>
 
-        <div class="tab-box">
+        <div class="tab-box">           
+
             <div class="form-group">
                 <label for="playerName">Nome:</label>
                 <input type="text" id="playerName" placeholder="Ex: teste"><br><br>
             </div>
+            
             <div class="form-group">
-                <label for="initiative">Iniciativa:</label>
-                <input type="number" id="initiative" placeholder="Ex: 5">
+                <label for="action">Iniciativa:</label>
+                <input type="number" id="action" placeholder="Ex: 5">
             </div>
     
             <h3>Perícias:</h3>
@@ -319,7 +342,7 @@
     </div>
 
     <script>
-        let initiativeList = [];
+        let actionList = [];
         let players = [];
         let monsters = [];
 
@@ -339,7 +362,7 @@
 
         function clearInputs() {
             document.getElementById('playerName').value = '';
-            document.getElementById('initiative').value = '';
+            document.getElementById('action').value = '';
             document.getElementById('spot').value = '';
             document.getElementById('listen').value = '';
             document.getElementById('search').value = '';
@@ -353,7 +376,7 @@
 
         function addPlayer() {
             const name = document.getElementById('playerName').value;
-            const initiative = parseInt(document.getElementById('initiative').value);
+            const action = parseInt(document.getElementById('action').value);
             const skills = {
                 'observar': parseInt(document.getElementById('spot').value),
                 'ouvir': parseInt(document.getElementById('listen').value),
@@ -366,12 +389,12 @@
                 'equilíbrio': parseInt(document.getElementById('balance').value)
             };
 
-            if (name && !isNaN(initiative)) {
-                players.push({ nome: name, iniciativa: initiative, pericias: skills });
+            if (name && !isNaN(action)) {
+                players.push({ nome: name, iniciativa: action, pericias: skills });
 
                 displayPlayers();
                 
-                displayInitiativePlayers();
+                displayActionPlayers();
 
                 clearInputs();
             }
@@ -381,7 +404,7 @@
             return Math.floor(Math.random() * 20) + 1 
         }
 
-        function runTest() {
+        function runSkillTest() {
             const skillName = document.getElementById('skillName').value.toLowerCase();
             const challengeValue = parseInt(document.getElementById('challengeValue').value);
             let result = [];
@@ -408,38 +431,49 @@
                 monsters.push({ nome: `Monstro${monsters.length + 1}`, iniciativa: 0 });
             }
 
-            displayInitiativeMonsters();
+            displayActionMonsters();
         }
 
         function addSpecificMonster() {
             const monsterName = document.getElementById('monsterName').value;
-            const monsterInitiative = parseInt(document.getElementById('monsterInitiative').value);
-            if (monsterName && !isNaN(monsterInitiative)) {
-                monsters.push({ nome: monsterName, iniciativa: monsterInitiative });
+            const monsteraction = parseInt(document.getElementById('monsteraction').value);
+            if (monsterName && !isNaN(monsteraction)) {
+                monsters.push({ nome: monsterName, iniciativa: monsteraction });
 
-                displayInitiativeMonsters();
+                displayActionMonsters();
             }
         }
 
-        function calculateInitiative() {
-            const monsterCount = parseInt(document.getElementById('monsterCount').value);
-            const monsters = [];
-            for (let i = 1; i <= monsterCount; i++) {
-                monsters.push({ nome: `Monstro ${i}`, iniciativa: 1 });
+        function clearRoundCounter() {
+            document.getElementById('clickCounter').value = 0
+        }
+
+        function roundCounter(){
+            const checkbox = document.getElementById('counterCheckbox');
+            const counterField = document.getElementById('clickCounter');
+            
+            if (checkbox.checked) {
+                let count = parseInt(counterField.value, 10) || 0;
+                counterField.value = count + 1;
             }
+        }
+
+        function runActionTest() {
+
+            roundCounter()
 
             const allCombatants = [...players, ...monsters];
 
-            initiativeList = allCombatants.map(combatant => {
+            actionList = allCombatants.map(person => {
                 return { 
-                    nome: combatant.nome, 
-                    iniciativa: combatant.iniciativa + randomDice()
+                    nome: person.nome, 
+                    iniciativa: person.iniciativa + randomDice()
                 };
             });
 
-            initiativeList.sort((a, b) => b.iniciativa - a.iniciativa);
+            actionList.sort((a, b) => b.iniciativa - a.iniciativa);
 
-            displayInitiative(initiativeList); 
+            displayAction(actionList); 
         }
 
         function displayResult(result) {
@@ -447,29 +481,29 @@
             resultDiv.innerHTML = '';
             result.forEach(r => {
                 const resultText = document.createElement('p');
-                resultText.textContent = `(${r.valor}) - ${r.nome}: ${r.sucesso ? 'true' : 'false'}`;
+                resultText.textContent = `(${r.valor}) - ${r.nome}: ${r.sucesso ? 'Sucesso' : 'Falha'}`;
                 resultDiv.appendChild(resultText);
             });
         }
 
-        function displayInitiative(combatants) {
-            const initiativeDiv = document.getElementById('initiativeResult');
-            initiativeDiv.innerHTML = ''; 
+        function displayAction(combatants) {
+            const actionDiv = document.getElementById('actionResult');
+            actionDiv.innerHTML = ''; 
 
             combatants.forEach(combatant => {
                 const combatantText = document.createElement('p');
                 combatantText.textContent = `${combatant.nome}: ${combatant.iniciativa}`; 
-                initiativeDiv.appendChild(combatantText);
+                actionDiv.appendChild(combatantText);
             });
 
 
             if(players != undefined && players.length > 0){
 
 
-                initiativeDiv.appendChild(fancyDivider)
+                actionDiv.appendChild(fancyDivider)
 
                 players.forEach((player, index) => {
-                    initiativeDiv.appendChild(addPlayerItem(player.nome, player.iniciativa, null, null));
+                    actionDiv.appendChild(addPlayerItem(player.nome, player.iniciativa, null, null));
                 });
             }
         }
@@ -493,34 +527,34 @@
             });
         }
 
-        function displayInitiativePlayers() {
-            const initiativePlayers = document.getElementById('initiativePlayers');
-            initiativePlayers.innerHTML = '';
+        function displayActionPlayers() {
+            const actionPlayers = document.getElementById('actionPlayers');
+            actionPlayers.innerHTML = '';
 
             if(players != undefined && players.length > 0){
-                initiativePlayers.before(addFancyDivider('initiativePlayersFancy'))
+                actionPlayers.before(addFancyDivider('actionPlayersFancy'))
             }else {
-                const divToRemove = document.getElementById('initiativePlayersFancy');
+                const divToRemove = document.getElementById('actionPlayersFancy');
                 if (divToRemove) {
                     divToRemove.remove();
                 }
             }
 
             players.forEach((player, index) => {
-                initiativePlayers.appendChild(addPlayerItem(player.nome, player.iniciativa, null, null));
+                actionPlayers.appendChild(addPlayerItem(player.nome, player.iniciativa, null, null));
             });
         }
 
-        function displayInitiativeMonsters() {
-            const initiativeMonsters = document.getElementById('initiativeMonsters');
-            initiativeMonsters.innerHTML = '';
+        function displayActionMonsters() {
+            const actionMonsters = document.getElementById('actionMonsters');
+            actionMonsters.innerHTML = '';
 
             if(monsters != undefined && monsters.length > 0){
-                const fancyDivider = addFancyDivider('initiativeMonsterFancy', 'monster')
+                const fancyDivider = addFancyDivider('actionMonsterFancy', 'monster')
 
-                initiativeMonsters.before(fancyDivider)
+                actionMonsters.before(fancyDivider)
             }else {
-                const divToRemove = document.getElementById('initiativeMonsterFancy');
+                const divToRemove = document.getElementById('actionMonsterFancy');
                 if (divToRemove) {
                     divToRemove.remove();
                 }
@@ -533,14 +567,14 @@
                 monsterName.textContent = monster.nome;
                 listItem.appendChild(monsterName);
 
-                const monsterInitiative = document.createElement('p');
-                monsterInitiative.textContent = `Iniciativa: ${monster.iniciativa}`;
-                listItem.appendChild(monsterInitiative);
+                const monsteraction = document.createElement('p');
+                monsteraction.textContent = `Iniciativa: ${monster.iniciativa}`;
+                listItem.appendChild(monsteraction);
 
 
                 listItem.appendChild(addRemoveMonsterButton(index));
 
-                initiativeMonsters.appendChild(listItem);
+                actionMonsters.appendChild(listItem);
             });
         }
 
@@ -552,9 +586,9 @@
             playerName.textContent = nome;
             listItem.appendChild(playerName);
 
-            const playerInitiative = document.createElement('p');
-            playerInitiative.textContent = `Iniciativa: ${iniciativa}`;
-            listItem.appendChild(playerInitiative);
+            const playeraction = document.createElement('p');
+            playeraction.textContent = `Iniciativa: ${iniciativa}`;
+            listItem.appendChild(playeraction);
             
             if(pericias != undefined){
                 listItem.appendChild(addSkillList(pericias));
@@ -606,12 +640,12 @@
         function removePlayer(index) {
             players.splice(index, 1); 
             displayPlayers();
-            displayInitiativePlayers();
+            displayActionPlayers();
         }
 
         function removeMonster(index) {
             monsters.splice(index, 1);
-            displayInitiativeMonsters();
+            displayActionMonsters();
         }
 
         function addFancyDivider(id, customClass){
