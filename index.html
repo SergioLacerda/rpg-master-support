@@ -16,15 +16,28 @@
             justify-content: flex-start;
             margin-bottom: 10px;
         }
-        .tabs button {
+        .tab-btn {
             padding: 10px;
             margin-left: 5px;
             cursor: pointer;
             display: flex;
             align-items: center;
+            background-color: #f0f0f0;
+            border: none;
+            outline: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
         }
         .tabs button i {
             margin-right: 5px;
+        }
+        .tab-btn:hover {
+            background-color: #ddd;
+        }
+        .tab-btn.active {
+            background-color: #4CAF50;
+            color: white;
+            border: 1px solid #4CAF50;
         }
         .tab {
             display: none;
@@ -97,16 +110,48 @@
             margin-left: 5px;
             text-align: left;
         }
+        .fancy-divider {
+            width: 100%;
+            max-width: 600px;
+            height: 30px;
+            position: relative;
+            margin: 20px 0;
+        }
+        .fancy-divider::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #333, transparent);
+        }
+        .fancy-divider::after {
+            content: "\f005";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            font-size: 20px;
+            color: #333;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 0 5px;
+        }
+        .fancy-divider.monster::after {
+            content: "\f54c";
+            font-family: "Font Awesome 5 Free"; 
+            font-weight: 900; 
+        }
     </style>
 </head>
 <body>
 
     <div class="tabs">
-        <button onclick="openTab('skillTab')"><i class="fas fa-scroll"></i>Perícia</button>
-
-        <button onclick="openTab('initiativeTab')"><i class="fas fa-bolt"></i>Iniciativa</button>
-
-        <button onclick="openTab('playersTab')"><i class="fas fa-users"></i>Jogadores</button>
+        <button class="tab-btn" onclick="openTab('skillTab', this)"><i class="fas fa-scroll"></i>Perícia</button>
+        <button class="tab-btn" onclick="openTab('initiativeTab', this)"><i class="fas fa-bolt"></i>Iniciativa</button>
+        <button class="tab-btn" onclick="openTab('playersTab', this)"><i class="fas fa-users"></i>Jogadores</button>
     </div>
 
     <div id="skillTab" class="tab">
@@ -195,14 +240,20 @@
 
     <script>
         let players = [];
-        let currentInitiative = []; 
+        let initiativeList = []; 
 
-        // Função para mudar de aba
-        function openTab(tabId) {
+        function openTab(tabId, element) {
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.classList.remove('active');
             });
+
             document.getElementById(tabId).classList.add('active');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            element.classList.add('active');
         }
 
         function clearInputs() {
@@ -277,16 +328,16 @@
 
             const allCombatants = [...players, ...monsters];
 
-            currentInitiative = allCombatants.map(combatant => {
+            initiativeList = allCombatants.map(combatant => {
                 return { 
                     nome: combatant.nome, 
-                    currentInitiative: combatant.iniciativa + randomDice()
+                    iniciativa: combatant.iniciativa + randomDice()
                 };
             });
 
-            currentInitiative.sort((a, b) => b.currentInitiative - a.currentInitiative);
+            initiativeList.sort((a, b) => b.iniciativa - a.iniciativa);
 
-            displayInitiative(currentInitiative); 
+            displayInitiative(initiativeList); 
         }
 
         function displayResult(result) {
@@ -300,34 +351,67 @@
         }
 
         function displayInitiative(combatants) {
-        const initiativeDiv = document.getElementById('initiativeResult');
-        initiativeDiv.innerHTML = ''; 
+            const initiativeDiv = document.getElementById('initiativeResult');
+            initiativeDiv.innerHTML = ''; 
 
-        combatants.forEach(combatant => {
-            const combatantText = document.createElement('p');
-            combatantText.textContent = `${combatant.nome}: ${combatant.currentInitiative}`; 
-            initiativeDiv.appendChild(combatantText);
-        });
+            combatants.forEach(combatant => {
+                const combatantText = document.createElement('p');
+                combatantText.textContent = `${combatant.nome}: ${combatant.iniciativa}`; 
+                initiativeDiv.appendChild(combatantText);
+            });
+
+
+            if(players != undefined && players.length > 0){
+                const fancyDivider = addFancyDivider('initiativeFancy')
+                fancyDivider.classList.add('monster');
+
+                initiativeDiv.appendChild(fancyDivider)
+
+                players.forEach((player, index) => {
+                    initiativeDiv.appendChild(addPlayerItem(player.nome, player.iniciativa, null, null));
+                });
+            }
         }
 
         function displayPlayers() {
             const playerList = document.getElementById('playerList');
             playerList.innerHTML = '';
+
+            playerList.before(addFancyDivider('playersFancy'));            
+
             players.forEach((player, index) => {
-                const listItem = document.createElement('li');
-                
-                const playerName = document.createElement('p');
-                playerName.textContent = player.nome;
-                listItem.appendChild(playerName);
+                playerList.appendChild(addPlayerItem(player.nome, player.iniciativa, player.pericias, index));
+            });
+        }
 
-                const playerInitiative = document.createElement('p');
-                playerInitiative.textContent = `Iniciativa: ${player.iniciativa}`;
-                listItem.appendChild(playerInitiative);
+        function addPlayerItem(nome, iniciativa, pericias, index){
+            const listItem = document.createElement('li');
+            listItem.style.listStyleType = 'none';
 
-                const skillList = document.createElement('div');
+            const playerName = document.createElement('p');
+            playerName.textContent = nome;
+            listItem.appendChild(playerName);
+
+            const playerInitiative = document.createElement('p');
+            playerInitiative.textContent = `Iniciativa: ${iniciativa}`;
+            listItem.appendChild(playerInitiative);
+            
+            if(pericias != undefined){
+                listItem.appendChild(addSkillList(pericias));
+            }
+
+            if(index != undefined){
+                listItem.appendChild(addRemoveButton(index));
+            }
+
+            return listItem;
+        }
+
+        function addSkillList(pericias){
+            const skillList = document.createElement('div');
                 skillList.classList.add('skill-list');
                 
-                for (const [skill, value] of Object.entries(player.pericias)) {
+                for (const [skill, value] of Object.entries(pericias)) {
                     if (value !== null && !isNaN(value)) {
                         const skillName = document.createElement('span');
                         skillName.textContent = skill;
@@ -338,18 +422,29 @@
                     }
                 }
 
-                listItem.appendChild(skillList);
-
-                const removeButton = document.createElement('button');
-                removeButton.classList.add('remove-btn');
-                removeButton.innerHTML = '<i class="fa-solid fa-user-slash"></i> Remover';
-                removeButton.onclick = () => removePlayer(index);
-
-                listItem.appendChild(removeButton);
-                playerList.appendChild(listItem);
-            });
+            return skillList
         }
 
+        function addRemoveButton(index){
+            const removeButton = document.createElement('button');
+            removeButton.classList.add('remove-btn');
+            removeButton.innerHTML = '<i class="fa-solid fa-user-slash"></i> Remover';
+            removeButton.onclick = () => removePlayer(index);
+
+            return removeButton;
+        }
+
+        function addFancyDivider(id){
+            if (document.getElementById(id)) {
+                return ''
+            }
+
+            const fancyDivider = document.createElement('div');
+            fancyDivider.id = id
+            fancyDivider.classList.add('fancy-divider');
+
+            return fancyDivider;
+        }
 
         function removePlayer(index) {
             players.splice(index, 1); 
