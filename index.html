@@ -57,7 +57,8 @@
         }
         .result {
             margin-top: 10px;
-            color: green;
+            padding: 10px;
+            border-radius: 5px;
         }
         .form-group {
             display: flex;
@@ -98,6 +99,51 @@
             box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
             overflow: hidden;
             text-overflow: ellipsis;
+        }
+        #initiativePlayers {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        #initiativePlayers li {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 150px;
+            padding: 5px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        #initiativeMonsters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        #initiativeMonsters li {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 150px;
+            padding: 5px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .tab-box {
+            display: inline-block;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #f9f9f9;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         .skill-list {
             display: grid;
@@ -149,9 +195,11 @@
 <body>
 
     <div class="tabs">
-        <button class="tab-btn" onclick="openTab('skillTab', this)"><i class="fas fa-scroll"></i>Perícia</button>
-        <button class="tab-btn" onclick="openTab('initiativeTab', this)"><i class="fas fa-bolt"></i>Iniciativa</button>
         <button class="tab-btn" onclick="openTab('playersTab', this)"><i class="fas fa-users"></i>Jogadores</button>
+
+        <button class="tab-btn" onclick="openTab('skillTab', this)"><i class="fas fa-scroll"></i>Perícia</button>
+
+        <button class="tab-btn" onclick="openTab('initiativeTab', this)"><i class="fas fa-bolt"></i>Iniciativa</button>
     </div>
 
     <div id="skillTab" class="tab">
@@ -175,72 +223,105 @@
         <div id="gameResult" class="result"></div>
     </div>
 
+    <div id="initiativeTab" class="tab">
+        <h3>Iniciativa</h3>
+
+        <div class="tab-box">
+            <h4>Adicionar Monstros</h4>
+
+            <div class="form-group">
+                <label for="monsterName">Nome:</label>
+                <input type="text" id="monsterName" placeholder="Ex: Orc">
+            </div>
+
+            <div class="form-group">
+                <label for="monsterInitiative">Iniciativa:</label>
+                <input type="number" id="monsterInitiative" placeholder="Ex: 5">
+            </div>
+            <button onclick="addSpecificMonster()">Adicionar  <i class="fas fa-user-plus"></i></button>
+
+            <br><br>
+
+            <div class="form-group">
+                <label for="monsterCount">Randomizar:</label>
+                <input type="number" id="monsterCount" placeholder="Ex: 3">
+            </div>
+            <button onclick="addRandomMonsters()">Adicionar  <i class="fas fa-user-plus"></i></button>
+
+        </div>
+
+        <br>
+        <button onclick="calculateInitiative()">Calcular Iniciativa  <i class="fa-solid fa-play"></i></button>
+
+        <div id="initiativeResult" class="result"></div>
+
+        <ul id="initiativePlayers"></ul>
+
+        <ul id="initiativeMonsters"></ul>
+    </div>
+
     <div id="playersTab" class="tab">
-        <h3></h3>
-        <div class="form-group">
-            <label for="playerName">Nome:</label>
-            <input type="text" id="playerName" placeholder="Ex: teste"><br><br>
-        </div>
-        <div class="form-group">
-            <label for="initiative">Iniciativa:</label>
-            <input type="number" id="initiative" placeholder="Ex: 5">
-        </div>
+        <h3>Adicionar Jogadores</h3>
 
-        <h3>Perícias:</h3>
-
-        <div class="form-group">
-            <label for="spot">Observar:</label>
-            <input type="number" id="spot" placeholder="Ex: 3">
-        </div>
-        <div class="form-group">
-            <label for="listen">Ouvir:</label>
-            <input type="number" id="listen" placeholder="Ex: 3">
-        </div>
-        <div class="form-group">
-            <label for="search">Procurar:</label>
-            <input type="number" id="search" placeholder="Ex: 3">
-        </div>
-        <div class="form-group">
-            <label for="senseMotive">Sentir Motivação:</label>
-            <input type="number" id="senseMotive" placeholder="Ex: 3">
-        </div>
-        <div class="form-group">
-            <label for="hide">Esconder-se:</label>
-            <input type="number" id="hide" placeholder="Ex: 3">
-        </div>
-        <div class="form-group">
-            <label for="moveSilently">Furtividade:</label>
-            <input type="number" id="moveSilently" placeholder="Ex: 3">
-        </div>
-        <div class="form-group">
-            <label for="appraise">Avaliação:</label>
-            <input type="number" id="appraise" placeholder="Ex: 3">
-        </div>
-        <div class="form-group">
-            <label for="survival">Sobrevivência:</label>
-            <input type="number" id="survival" placeholder="Ex: 3">
-        </div>
-        <div class="form-group">
-            <label for="balance">Equilíbrio:</label>
-            <input type="number" id="balance" placeholder="Ex: 3">
-        </div>
-
-        <button onclick="addPlayer()">Adicionar  <i class="fas fa-user-plus"></i></button>
+        <div class="tab-box">
+            <div class="form-group">
+                <label for="playerName">Nome:</label>
+                <input type="text" id="playerName" placeholder="Ex: teste"><br><br>
+            </div>
+            <div class="form-group">
+                <label for="initiative">Iniciativa:</label>
+                <input type="number" id="initiative" placeholder="Ex: 5">
+            </div>
+    
+            <h3>Perícias:</h3>
+    
+            <div class="form-group">
+                <label for="spot">Observar:</label>
+                <input type="number" id="spot" placeholder="Ex: 3">
+            </div>
+            <div class="form-group">
+                <label for="listen">Ouvir:</label>
+                <input type="number" id="listen" placeholder="Ex: 3">
+            </div>
+            <div class="form-group">
+                <label for="search">Procurar:</label>
+                <input type="number" id="search" placeholder="Ex: 3">
+            </div>
+            <div class="form-group">
+                <label for="senseMotive">Sentir Motivação:</label>
+                <input type="number" id="senseMotive" placeholder="Ex: 3">
+            </div>
+            <div class="form-group">
+                <label for="hide">Esconder-se:</label>
+                <input type="number" id="hide" placeholder="Ex: 3">
+            </div>
+            <div class="form-group">
+                <label for="moveSilently">Furtividade:</label>
+                <input type="number" id="moveSilently" placeholder="Ex: 3">
+            </div>
+            <div class="form-group">
+                <label for="appraise">Avaliação:</label>
+                <input type="number" id="appraise" placeholder="Ex: 3">
+            </div>
+            <div class="form-group">
+                <label for="survival">Sobrevivência:</label>
+                <input type="number" id="survival" placeholder="Ex: 3">
+            </div>
+            <div class="form-group">
+                <label for="balance">Equilíbrio:</label>
+                <input type="number" id="balance" placeholder="Ex: 3">
+            </div>
+    
+            <button onclick="addPlayer()">Adicionar  <i class="fas fa-user-plus"></i></button>
+        </div>        
 
         <ul id="playerList"></ul>
     </div>
 
-    <div id="initiativeTab" class="tab">
-        <h3></h3>
-        <label for="monsterCount">Quantidade de Monstros:</label>
-        <input type="number" id="monsterCount" placeholder="Ex: 3">
-        <button onclick="calculateInitiative()">Calcular Iniciativa  <i class="fa-solid fa-play"></i></button>
-        <div id="initiativeResult" class="result"></div>
-    </div>
-
     <script>
+        let initiativeList = [];
         let players = [];
-        let initiativeList = []; 
+        let monsters = [];
 
         function openTab(tabId, element) {
             document.querySelectorAll('.tab').forEach(tab => {
@@ -287,10 +368,12 @@
 
             if (name && !isNaN(initiative)) {
                 players.push({ nome: name, iniciativa: initiative, pericias: skills });
+
                 displayPlayers();
+                
+                displayInitiativePlayers();
+
                 clearInputs();
-            } else {
-                alert("Por favor, preencha os campos corretamente.");
             }
         }
         
@@ -317,6 +400,25 @@
             });
 
             displayResult(result);
+        }
+
+        function addRandomMonsters() {
+            const monsterCount = parseInt(document.getElementById('monsterCount').value);
+            for (let i = 1; i <= monsterCount; i++) {
+                monsters.push({ nome: `Monstro${monsters.length + 1}`, iniciativa: 0 });
+            }
+
+            displayInitiativeMonsters();
+        }
+
+        function addSpecificMonster() {
+            const monsterName = document.getElementById('monsterName').value;
+            const monsterInitiative = parseInt(document.getElementById('monsterInitiative').value);
+            if (monsterName && !isNaN(monsterInitiative)) {
+                monsters.push({ nome: monsterName, iniciativa: monsterInitiative });
+
+                displayInitiativeMonsters();
+            }
         }
 
         function calculateInitiative() {
@@ -362,8 +464,7 @@
 
 
             if(players != undefined && players.length > 0){
-                const fancyDivider = addFancyDivider('initiativeFancy')
-                fancyDivider.classList.add('monster');
+
 
                 initiativeDiv.appendChild(fancyDivider)
 
@@ -377,10 +478,69 @@
             const playerList = document.getElementById('playerList');
             playerList.innerHTML = '';
 
-            playerList.before(addFancyDivider('playersFancy'));            
+
+            if(players != undefined && players.length > 0){
+                playerList.before(addFancyDivider('playersFancy'))
+            }else {
+                const divToRemove = document.getElementById('playersFancy');
+                if (divToRemove) {
+                    divToRemove.remove();
+                }
+            }
 
             players.forEach((player, index) => {
                 playerList.appendChild(addPlayerItem(player.nome, player.iniciativa, player.pericias, index));
+            });
+        }
+
+        function displayInitiativePlayers() {
+            const initiativePlayers = document.getElementById('initiativePlayers');
+            initiativePlayers.innerHTML = '';
+
+            if(players != undefined && players.length > 0){
+                initiativePlayers.before(addFancyDivider('initiativePlayersFancy'))
+            }else {
+                const divToRemove = document.getElementById('initiativePlayersFancy');
+                if (divToRemove) {
+                    divToRemove.remove();
+                }
+            }
+
+            players.forEach((player, index) => {
+                initiativePlayers.appendChild(addPlayerItem(player.nome, player.iniciativa, null, null));
+            });
+        }
+
+        function displayInitiativeMonsters() {
+            const initiativeMonsters = document.getElementById('initiativeMonsters');
+            initiativeMonsters.innerHTML = '';
+
+            if(monsters != undefined && monsters.length > 0){
+                const fancyDivider = addFancyDivider('initiativeMonsterFancy', 'monster')
+
+                initiativeMonsters.before(fancyDivider)
+            }else {
+                const divToRemove = document.getElementById('initiativeMonsterFancy');
+                if (divToRemove) {
+                    divToRemove.remove();
+                }
+            }
+            
+            monsters.forEach((monster, index) => {
+                const listItem = document.createElement('li');
+
+                const monsterName = document.createElement('p');
+                monsterName.textContent = monster.nome;
+                listItem.appendChild(monsterName);
+
+                const monsterInitiative = document.createElement('p');
+                monsterInitiative.textContent = `Iniciativa: ${monster.iniciativa}`;
+                listItem.appendChild(monsterInitiative);
+
+
+                listItem.appendChild(addRemoveMonsterButton(index));
+
+                initiativeMonsters.appendChild(listItem);
             });
         }
 
@@ -434,7 +594,27 @@
             return removeButton;
         }
 
-        function addFancyDivider(id){
+        function addRemoveMonsterButton(index){
+            const removeButton = document.createElement('button');
+            removeButton.classList.add('remove-btn');
+            removeButton.innerHTML = '<i class="fa-solid fa-trash"></i> Remover';
+            removeButton.onclick = () => removeMonster(index);
+
+            return removeButton;
+        }
+
+        function removePlayer(index) {
+            players.splice(index, 1); 
+            displayPlayers();
+            displayInitiativePlayers();
+        }
+
+        function removeMonster(index) {
+            monsters.splice(index, 1);
+            displayInitiativeMonsters();
+        }
+
+        function addFancyDivider(id, customClass){
             if (document.getElementById(id)) {
                 return ''
             }
@@ -443,14 +623,13 @@
             fancyDivider.id = id
             fancyDivider.classList.add('fancy-divider');
 
+            if(customClass){
+                fancyDivider.classList.add(customClass);
+            }
+
             return fancyDivider;
         }
-
-        function removePlayer(index) {
-            players.splice(index, 1); 
-            displayPlayers();
-        }
-    </script>
+</script>
 
 </body>
 </html>
