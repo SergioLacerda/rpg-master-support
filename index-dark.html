@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+    <link rel="stylesheet" href="css/dark/styles.css">
+
+    <title>Game and Players</title>
+</head>
+<body>
+
+    <ul class="tabs">
+        <li><a href="#" title="Jogadores" onclick="openTab('playersTab', this) "><i class="fas fa-users"></i></a></li>
+        <li><a href="#" title="Perícia" onclick="openTab('skillTab', this) "><i class="fas fa-scroll"></i></a></li>
+        <li><a href="#" title="Iniciativa" onclick="openTab('actionTab', this) "><i class="fas fa-bolt"></i></a></li>
+    </ul>
+
+    <div id="skillTab" class="tab">
+
+        <div class="tab-box">
+            <div class="form-group">
+                <label for="skillName">Perícia:</label>
+                <select id="skillName">
+                    <option value="observar">Observar</option>
+                    <option value="ouvir">Ouvir</option>
+                    <option value="procurar">Procurar</option>
+                    <option value="sentir motivação">Sentir Motivação</option>
+                    <option value="esconder-se">Esconder-se</option>
+                    <option value="furtividade">Furtividade</option>
+                    <option value="avaliação">Avaliação</option>
+                    <option value="sobrevivência">Sobrevivência</option>
+                    <option value="equilíbrio">Equilíbrio</option>
+                </select>
+            </div>
+
+            <br>
+            <div class="form-group">
+                <label for="challengeValue">Valor de Desafio:</label>
+                <input type="number" id="challengeValue" placeholder="Ex: 2">
+            </div>
+
+            <div class="form-group">
+                <button onclick="runSkillTest()">Executar Teste  <i class="fa-solid fa-play"></i></button>
+            </div>
+        </div>
+
+        <div id="gameResult" class="result"></div>            
+
+    </div>
+
+    <div id="actionTab" class="tab">
+
+        <div class="tab-box">
+            <h4>Adicionar Monstros</h4>
+
+            <div class="form-group">
+                <label for="monsterName">Nome:</label>
+                <input type="text" id="monsterName" placeholder="Ex: Orc">
+            </div>
+
+            <div class="form-group">
+                <label for="monsteraction">Iniciativa:</label>
+                <input type="number" id="monsteraction" placeholder="Ex: 5">
+            </div>
+            <button onclick="addSpecificMonster()">Adicionar  <i class="fas fa-user-plus"></i></button>
+
+            <br><br>
+
+            <div class="form-group">
+                <label for="monsterCount">Randomizar:</label>
+                <input type="number" id="monsterCount" placeholder="Ex: 3">
+            </div>
+            <button onclick="addRandomMonsters()">Adicionar  <i class="fas fa-user-plus"></i></button>
+
+        </div>
+
+        <div class="tab-box">
+
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="counterCheckbox" onclick="clearRoundCounter()"> Contar rodadas
+                </label>
+
+                <input type="number" id="clickCounter" value="0" readonly disabled>
+            </div>
+
+            <button onclick="runActionTest()">Calcular Iniciativa  <i class="fa-solid fa-play"></i></button>
+        </div>
+        
+
+        <div id="actionResult" class="result"></div>
+
+        <ul id="actionPlayers"></ul>
+
+        <ul id="actionMonsters"></ul>
+    </div>
+
+    <div id="playersTab" class="tab">
+
+        <div class="tab-box">           
+
+            <div class="form-group">
+                <label for="playerName">Nome:</label>
+                <input type="text" id="playerName" placeholder="Ex: teste"><br><br>
+            </div>
+            
+            <div class="form-group">
+                <label for="action">Iniciativa:</label>
+                <input type="number" id="action" placeholder="Ex: 5">
+            </div>
+    
+            <h3>Perícias:</h3>
+    
+            <div class="form-group">
+                <label for="spot">Observar:</label>
+                <input type="number" id="spot" placeholder="Ex: 3">
+            </div>
+            <div class="form-group">
+                <label for="listen">Ouvir:</label>
+                <input type="number" id="listen" placeholder="Ex: 3">
+            </div>
+            <div class="form-group">
+                <label for="search">Procurar:</label>
+                <input type="number" id="search" placeholder="Ex: 3">
+            </div>
+            <div class="form-group">
+                <label for="senseMotive">Sentir Motivação:</label>
+                <input type="number" id="senseMotive" placeholder="Ex: 3">
+            </div>
+            <div class="form-group">
+                <label for="hide">Esconder-se:</label>
+                <input type="number" id="hide" placeholder="Ex: 3">
+            </div>
+            <div class="form-group">
+                <label for="moveSilently">Furtividade:</label>
+                <input type="number" id="moveSilently" placeholder="Ex: 3">
+            </div>
+            <div class="form-group">
+                <label for="appraise">Avaliação:</label>
+                <input type="number" id="appraise" placeholder="Ex: 3">
+            </div>
+            <div class="form-group">
+                <label for="survival">Sobrevivência:</label>
+                <input type="number" id="survival" placeholder="Ex: 3">
+            </div>
+            <div class="form-group">
+                <label for="balance">Equilíbrio:</label>
+                <input type="number" id="balance" placeholder="Ex: 3">
+            </div>
+    
+            <button onclick="addPlayer()">Adicionar  <i class="fas fa-user-plus"></i></button>
+        </div>        
+
+        <ul id="playerList"></ul>
+    </div>
+
+<script>
+    let actionList = [];
+    let players = [];
+    let monsters = [];
+
+    function openTab(tabId, element) {
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        document.getElementById(tabId).classList.add('active');
+        document.querySelectorAll('.tabs li a').forEach(a => {
+            a.classList.remove('active');
+        });
+
+        element.classList.add('active');
+    }
+
+    function clearInputs() {
+        document.getElementById('playerName').value = '';
+        document.getElementById('action').value = '';
+        document.getElementById('spot').value = '';
+        document.getElementById('listen').value = '';
+        document.getElementById('search').value = '';
+        document.getElementById('senseMotive').value = '';
+        document.getElementById('hide').value = '';
+        document.getElementById('moveSilently').value = '';
+        document.getElementById('appraise').value = '';
+        document.getElementById('survival').value = '';
+        document.getElementById('balance').value = '';
+    }
+
+    function addPlayer() {
+        const name = document.getElementById('playerName').value;
+        const action = parseInt(document.getElementById('action').value);
+        const skills = {
+            'observar': parseInt(document.getElementById('spot').value),
+            'ouvir': parseInt(document.getElementById('listen').value),
+            'procurar': parseInt(document.getElementById('search').value),
+            'sentir motivação': parseInt(document.getElementById('senseMotive').value),
+            'esconder-se': parseInt(document.getElementById('hide').value),
+            'furtividade': parseInt(document.getElementById('moveSilently').value),
+            'avaliação': parseInt(document.getElementById('appraise').value),
+            'sobrevivência': parseInt(document.getElementById('survival').value),
+            'equilíbrio': parseInt(document.getElementById('balance').value)
+        };
+
+        if (name && !isNaN(action)) {
+            players.push({ nome: name, iniciativa: action, pericias: skills });
+
+            displayPlayers();
+            
+            displayActionPlayers();
+
+            clearInputs();
+        }
+    }
+    
+    function randomDice(){
+        return Math.floor(Math.random() * 20) + 1 
+    }
+
+    function runSkillTest() {
+        const skillName = document.getElementById('skillName').value.toLowerCase();
+        const challengeValue = parseInt(document.getElementById('challengeValue').value);
+        let result = [];
+
+        players.forEach(player => {
+            let success = false;
+            let finalValue = player.pericias[skillName] + randomDice();
+
+            if (player.pericias[skillName] !== undefined) {
+                if (finalValue >= challengeValue) {
+                    success = true;
+                }
+            }
+
+            result.push({ nome: player.nome, sucesso: success, valor: finalValue });
+        });
+
+        displayResult(result);
+    }
+
+    function addRandomMonsters() {
+        const monsterCount = parseInt(document.getElementById('monsterCount').value);
+        for (let i = 1; i <= monsterCount; i++) {
+            monsters.push({ nome: `Monstro${monsters.length + 1}`, iniciativa: 0 });
+        }
+
+        displayActionMonsters();
+    }
+
+    function addSpecificMonster() {
+        const monsterName = document.getElementById('monsterName').value;
+        const monsteraction = parseInt(document.getElementById('monsteraction').value);
+        if (monsterName && !isNaN(monsteraction)) {
+            monsters.push({ nome: monsterName, iniciativa: monsteraction });
+
+            displayActionMonsters();
+        }
+    }
+
+    function clearRoundCounter() {
+        document.getElementById('clickCounter').value = 0
+    }
+
+    function roundCounter(){
+        const checkbox = document.getElementById('counterCheckbox');
+        const counterField = document.getElementById('clickCounter');
+        
+        if (checkbox.checked) {
+            let count = parseInt(counterField.value, 10) || 0;
+            counterField.value = count + 1;
+        }
+    }
+
+    function runActionTest() {
+
+        roundCounter()
+
+        const allCombatants = [...players, ...monsters];
+
+        actionList = allCombatants.map(person => {
+            return { 
+                nome: person.nome, 
+                iniciativa: person.iniciativa + randomDice()
+            };
+        });
+
+        actionList.sort((a, b) => b.iniciativa - a.iniciativa);
+
+        displayAction(actionList); 
+    }
+
+    function displayResult(result) {
+        const resultDiv = document.getElementById('gameResult');
+        resultDiv.innerHTML = '';
+        result.forEach(r => {
+            const resultText = document.createElement('p');
+            resultText.textContent = `(${r.valor}) - ${r.nome}: ${r.sucesso ? 'Sucesso' : 'Falha'}`;
+            resultDiv.appendChild(resultText);
+        });
+    }
+
+    function displayAction(combatants) {
+        const actionDiv = document.getElementById('actionResult');
+        actionDiv.innerHTML = ''; 
+
+        combatants.forEach(combatant => {
+            const combatantText = document.createElement('p');
+            combatantText.textContent = `${combatant.nome}: ${combatant.iniciativa}`; 
+            actionDiv.appendChild(combatantText);
+        });
+
+
+        if(players != undefined && players.length > 0){
+
+
+            actionDiv.appendChild(fancyDivider)
+
+            players.forEach((player, index) => {
+                actionDiv.appendChild(addPlayerItem(player.nome, player.iniciativa, null, null));
+            });
+        }
+    }
+
+    function displayPlayers() {
+        const playerList = document.getElementById('playerList');
+        playerList.innerHTML = '';
+
+
+        if(players != undefined && players.length > 0){
+            playerList.before(addFancyDivider('playersFancy'))
+        }else {
+            const divToRemove = document.getElementById('playersFancy');
+            if (divToRemove) {
+                divToRemove.remove();
+            }
+        }
+
+        players.forEach((player, index) => {
+            playerList.appendChild(addPlayerItem(player.nome, player.iniciativa, player.pericias, index));
+        });
+    }
+
+    function displayActionPlayers() {
+        const actionPlayers = document.getElementById('actionPlayers');
+        actionPlayers.innerHTML = '';
+
+        if(players != undefined && players.length > 0){
+            actionPlayers.before(addFancyDivider('actionPlayersFancy'))
+        }else {
+            const divToRemove = document.getElementById('actionPlayersFancy');
+            if (divToRemove) {
+                divToRemove.remove();
+            }
+        }
+
+        players.forEach((player, index) => {
+            actionPlayers.appendChild(addPlayerItem(player.nome, player.iniciativa, null, null));
+        });
+    }
+
+    function displayActionMonsters() {
+        const actionMonsters = document.getElementById('actionMonsters');
+        actionMonsters.innerHTML = '';
+
+        if(monsters != undefined && monsters.length > 0){
+            const fancyDivider = addFancyDivider('actionMonsterFancy', 'monster')
+
+            actionMonsters.before(fancyDivider)
+        }else {
+            const divToRemove = document.getElementById('actionMonsterFancy');
+            if (divToRemove) {
+                divToRemove.remove();
+            }
+        }
+        
+        monsters.forEach((monster, index) => {
+            const listItem = document.createElement('li');
+
+            const monsterName = document.createElement('p');
+            monsterName.textContent = monster.nome;
+            listItem.appendChild(monsterName);
+
+            const monsteraction = document.createElement('p');
+            monsteraction.textContent = `Iniciativa: ${monster.iniciativa}`;
+            listItem.appendChild(monsteraction);
+
+
+            listItem.appendChild(addRemoveMonsterButton(index));
+
+            actionMonsters.appendChild(listItem);
+        });
+    }
+
+    function addPlayerItem(nome, iniciativa, pericias, index){
+        const listItem = document.createElement('li');
+        listItem.style.listStyleType = 'none';
+
+        const playerName = document.createElement('p');
+        playerName.textContent = nome;
+        listItem.appendChild(playerName);
+
+        const playeraction = document.createElement('p');
+        playeraction.textContent = `Iniciativa: ${iniciativa}`;
+        listItem.appendChild(playeraction);
+        
+        if(pericias != undefined){
+            listItem.appendChild(addSkillList(pericias));
+        }
+
+        if(index != undefined){
+            listItem.appendChild(addRemoveButton(index));
+        }
+
+        return listItem;
+    }
+
+    function addSkillList(pericias){
+        const skillList = document.createElement('div');
+            skillList.classList.add('skill-list');
+            
+            for (const [skill, value] of Object.entries(pericias)) {
+                if (value !== null && !isNaN(value)) {
+                    const skillName = document.createElement('span');
+                    skillName.textContent = skill;
+                    const skillValue = document.createElement('span');
+                    skillValue.textContent = value;
+                    skillList.appendChild(skillName);
+                    skillList.appendChild(skillValue);
+                }
+            }
+
+        return skillList
+    }
+
+    function addRemoveButton(index){
+        const removeButton = document.createElement('button');
+        removeButton.classList.add('remove-btn');
+        removeButton.innerHTML = '<i class="fa-solid fa-user-slash"></i> Remover';
+        removeButton.onclick = () => removePlayer(index);
+
+        return removeButton;
+    }
+
+    function addRemoveMonsterButton(index){
+        const removeButton = document.createElement('button');
+        removeButton.classList.add('remove-btn');
+        removeButton.innerHTML = '<i class="fa-solid fa-trash"></i> Remover';
+        removeButton.onclick = () => removeMonster(index);
+
+        return removeButton;
+    }
+
+    function removePlayer(index) {
+        players.splice(index, 1); 
+        displayPlayers();
+        displayActionPlayers();
+    }
+
+    function removeMonster(index) {
+        monsters.splice(index, 1);
+        displayActionMonsters();
+    }
+
+    function addFancyDivider(id, customClass){
+        if (document.getElementById(id)) {
+            return ''
+        }
+
+        const fancyDivider = document.createElement('div');
+        fancyDivider.id = id
+        fancyDivider.classList.add('fancy-divider-light');
+
+        if(customClass){
+            fancyDivider.classList.add(customClass);
+        }
+
+        return fancyDivider;
+    }
+</script>
+
+</body>
+</html>
