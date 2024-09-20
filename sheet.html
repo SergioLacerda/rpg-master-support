@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="css/sheet/styles.css">
+
+    <title>Ficha de Personagem - D&D 3.5</title>
+
+</head>
+
+<body>
+    <div class="container">
+        <h1>Ficha de Personagem - D&D 3.5</h1>
+        
+        <div class="tabs">
+            <button class="tab-link active" onclick="openTab(event, 'tab1')">Informações Básicas</button>
+            <button class="tab-link" onclick="openTab(event, 'tab2')">Perícias</button>
+            <button class="tab-link" onclick="openTab(event, 'tab3')">Equipamentos e Inventário</button>
+            <button class="tab-link" onclick="openTab(event, 'tab4')">Habilidades de classe</button>
+            <button class="tab-link" onclick="openTab(event, 'tab5')">Magias</button>
+
+        </div>
+        
+        <div id="tab1" class="tab-content active">
+            <div class="grid-4">
+                <div>
+                    <label for="nome">Nome</label>
+                    <input type="text" id="nome" placeholder="Nome do personagem">
+                </div>
+                <div>
+                    <label for="classe">Classe</label>
+                    <input type="text" id="classe" placeholder="Classe">
+                </div>
+                <div>
+                    <label for="nivel">Nível</label>
+                    <input type="number" id="nivel" placeholder="Nível">
+                </div>
+                <div>
+                    <label for="raca">Raça</label>
+                    <input type="text" id="raca" placeholder="Raça">
+                </div>
+                <div>
+                    <label for="alinhamento">Alinhamento</label>
+                    <input type="text" id="alinhamento" placeholder="Alinhamento">
+                </div>
+                <div>
+                    <label for="divindade">Divindade</label>
+                    <input type="text" id="divindade" placeholder="Divindade">
+                </div>
+                <div>
+                    <label for="sexo">Sexo</label>
+                    <input type="text" id="sexo" placeholder="Sexo">
+                </div>
+                <div>
+                    <label for="idade">Idade</label>
+                    <input type="number" id="idade" placeholder="Idade">
+                </div>
+            </div>
+
+            <h2>Atributos</h2>
+
+            <div class="grid-6">
+                <div>
+                    <label for="for">Força</label>
+                    <input type="number" id="FOR" placeholder="10" oninput="calcularModificador('FOR')">
+                    <small>Modificador: <span id="strengthModifier">0</span></small>
+                </div>
+                <div>
+                    <label for="des">Destreza</label>
+                    <input type="number" id="DES" placeholder="10" oninput="calcularModificador('DES')">
+                    <small>Modificador: <span id="dexterityModifier">0</span></small>
+                </div>
+                <div>
+                    <label for="con">Constituição</label>
+                    <input type="number" id="CON" placeholder="10" oninput="calcularModificador('CON')">
+                    <small>Modificador: <span id="constitutionModifier">0</span></small>
+                </div>
+                <div>
+                    <label for="int">Inteligência</label>
+                    <input type="number" id="INT" placeholder="10" oninput="calcularModificador('INT')">
+                    <small>Modificador: <span id="IntelligenceModifier">0</span></small>
+                </div>
+                <div>
+                    <label for="sab">Sabedoria</label>
+                    <input type="number" id="SAB" placeholder="10" oninput="calcularModificador('SAB')">
+                    <small>Modificador: <span id="wisdomModifier">0</span></small>
+                </div>
+                <div>
+                    <label for="car">Carisma</label>
+                    <input type="number" id="CAR" placeholder="10" oninput="calcularModificador('CAR')">
+                    <small>Modificador: <span id="charismaModifier">0</span></small>
+                </div>
+            </div>
+
+
+            <h2>Resistências</h2>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Bônus Base</th>
+                        <th>Mod. Habilidade</th>
+                        <th>Mod. Mágico</th>
+                        <th>Outros</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Fortitude</td>
+                        <td><input type="number" id="bonusBaseFortitude" class="resistencia-bonus"></td>
+                        <td class="align-center"><span id="modHabilidadeFortitude">0</span></td>
+                        <td><input type="number" id="modMagicoFortitude" class="resistencia-magico"></td>
+                        <td><input type="number" id="outrosFortitude" class="resistencia-outros"></td>
+                        <td><input type="number" id="totalFortitude" class="resistencia-total" readonly></td>                            
+                    </tr>
+                    <tr>
+                        <td>Reflexos</td>
+                        <td><input type="number" id="bonusBaseReflexos" class="resistencia-bonus"></td>
+                        <td class="align-center"><span id="modHabilidadeReflexos">0</span></td>
+                        <td><input type="number" id="modMagicoReflexos" class="resistencia-magico"></td>
+                        <td><input type="number" id="outrosReflexos" class="resistencia-outros"></td>
+                        <td><input type="number" id="totalReflexos" class="resistencia-total" readonly></td>
+                    </tr>
+                    <tr>
+                        <td>Vontade</td>
+                        <td><input type="number" id="bonusBaseVontade" class="resistencia-bonus"></td>
+                        <td class="align-center"><span id="modHabilidadeVontade">0</span></td>
+                        <td><input type="number" id="modMagicoVontade" class="resistencia-magico"></td>
+                        <td><input type="number" id="outrosVontade" class="resistencia-outros"></td>
+                        <td><input type="number" id="totalVontade" class="resistencia-total" readonly></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="tab2" class="tab-content">
+            <h3>Cadastrar Perícia</h3>
+        
+            <div class="form-group">
+                <label for="newSkillName">Nome da Perícia:</label>
+                <select id="newSkillName">
+                </select>
+            </div>
+        
+            <div class="form-group">
+                <label for="newSkillValue">Valor da Perícia:</label>
+                <input type="number" id="newSkillValue" placeholder="Ex: 5">
+            </div>
+        
+            <div class="form-group">
+                <small>Modificador: <span id="abilityModifierDisplay">0</span></small>
+            </div>
+        
+            <button onclick="addNewSkill()">Adicionar Perícia</button>
+        
+            <h3>Perícias Cadastradas</h3>
+            <ul id="skillList"></ul>
+        
+            <br>
+        
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="toggleSkillsList" onclick="toggleSkillsList()"> Mostrar todas as perícias possíveis
+                </label>
+            </div>
+        
+            <ul id="allSkillsList" style="display: none;"></ul>
+        </div>
+        
+
+        <div id="tab3" class="tab-content">
+            <textarea id="equipamentos" rows="5" placeholder="Lista de equipamentos e itens..."></textarea>
+        
+            <h2>Armas de combate</h2>
+        
+            <div class="grid-6">
+                <div>
+                    <label for="weaponDescription">Arma:</label>
+                    <input type="text" id="weaponDescription" placeholder="Ex: Espada Longa">
+                </div>
+                <div>
+                    <label for="weaponBonus">Bônus de Ataque:</label>
+                    <input type="text" id="weaponBonus" placeholder="Ex: 1d8+2">
+                </div>
+                <div>
+                    <label for="weaponCritical">Crítico:</label>
+                    <input type="text" id="weaponCritical" placeholder="Ex: 19-20/x2">
+                </div>
+                <div>
+                    <label for="weaponType">Tipo:</label>
+                    <input type="text" id="weaponType" placeholder="Peq. médio ou grande">
+                </div>
+                <div>
+                    <label for="weaponDistance">Distância:</label>
+                    <input type="number" id="weaponDistance" placeholder="30m">
+                </div>
+            </div>
+
+            <button onclick="addWeapon()">Adicionar <i class="fas fa-user-plus"></i></button>
+        
+            <ul id="weaponList"></ul>
+        </div>
+
+        <div id="tab4" class="tab-content">
+            <textarea id="habilidades" rows="5" placeholder="Descrição das habilidades de classe..."></textarea>
+        </div>
+
+        <div id="tab5" class="tab-content">
+            <textarea id="magias" rows="5" placeholder="Lista de magias conhecidas e memorizadas..."></textarea>
+        </div>
+
+    </div>
+    
+    <script>
+        const weapons = [];
+
+        function openTab(evt, tabId) {
+            const tabContents = document.querySelectorAll('.tab-content');
+            const tabLinks = document.querySelectorAll('.tab-link');
+
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            tabLinks.forEach(link => {
+                link.classList.remove('active');
+            });
+
+            document.getElementById(tabId).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        function calcularModificador(atributoId) {
+            const valorAtributo = parseInt(document.getElementById(atributoId).value) || 0;
+            const modificador = Math.floor((valorAtributo - 10) / 2);
+            
+            switch (atributoId) {
+                case 'FOR':
+                    document.getElementById('strengthModifier').textContent = modificador;
+                    document.getElementById('modifierSkillStrength').textContent = modificador;
+
+                    break;
+                case 'DES':
+                    document.getElementById('dexterityModifier').textContent = modificador;
+                    document.getElementById(`modifierSkillDexterity`).textContent = modificador;
+
+                    document.getElementById('modHabilidadeReflexos').textContent = modificador;
+                    calcularResistencia('Reflexos');
+
+                    break;
+                case 'CON':
+                    document.getElementById('constitutionModifier').textContent = modificador;
+                    document.getElementById(`modifierSkillConstitution`).textContent = modificador;
+
+                    document.getElementById('modHabilidadeFortitude').textContent = modificador;
+                    calcularResistencia('Vontade');
+
+                    break;
+                case 'INT':
+                    document.getElementById('IntelligenceModifier').textContent = modificador;
+                    document.getElementById(`modifierSkillIntelligence`).textContent = modificador;
+
+                    break;
+                case 'SAB':
+                    document.getElementById('wisdomModifier').textContent = modificador;
+                    document.getElementById(`modifierSkillWisdom`).textContent = modificador;
+
+                    document.getElementById('modHabilidadeVontade').textContent = modificador;
+                    calcularResistencia('Fortitude');
+
+                    break;
+                case 'CAR':
+                    document.getElementById(`modifierSkillCharisma`).textContent = modificador;
+                    document.getElementById('charismaModifier').textContent = modificador;
+
+                    break;
+                default:
+                    break;
+            }
+        }
+
+		function calcularResistencia(tipo) {
+			// const bonusBase = parseInt(document.getElementById(`bonusBase${tipo}`).value) || 0;
+			// const modHabilidade = parseInt(document.getElementById(`modHabilidade${tipo}`).value) || 0;
+			// const modMagico = parseInt(document.getElementById(`modMagico${tipo}`).value) || 0;
+			// const outros = parseInt(document.getElementById(`outros${tipo}`).value) || 0;
+			// const total = bonusBase + modHabilidade + modMagico + outros;
+
+			// document.getElementById(`total${tipo}`).value = total;
+		}
+
+        /*  ############# 
+
+            CADASTRAR ARMAS 
+
+            ############# 
+        */
+
+        function addWeapon() {
+            const weaponDescription = document.getElementById('weaponDescription').value;
+            const weaponBonus = parseInt(document.getElementById('weaponBonus').value);
+            const weaponCritical = document.getElementById('weaponCritical').value;
+            const weaponType = document.getElementById('weaponType').value;
+            const weaponDistance = parseInt(document.getElementById('weaponDistance').value);
+
+            const weaponDetails = {
+                descricao: weaponDescription,
+                bonus: weaponBonus,
+                critico: weaponCritical,
+                tipo: weaponType,
+                distancia: weaponDistance
+            };
+
+            if (weaponDescription && !isNaN(weaponBonus) && weaponCritical && weaponType && !isNaN(weaponDistance)) {
+                weapons.push(weaponDetails);
+
+                displayWeapons();
+
+                clearWeaponInputs();
+            }
+        }
+
+        function displayWeapons() {
+            const weaponList = document.getElementById('weaponList');
+            weaponList.innerHTML = '';
+
+            weapons.forEach((weapon, index) => {
+                const weaponItem = document.createElement('li');
+                weaponItem.innerHTML = `${weapon.descricao} - Bônus: ${weapon.bonus}, Crítico: ${weapon.critico}, Tipo: ${weapon.tipo}, Distância: ${weapon.distancia} 
+                                        <button class="removeWeapon" onclick="removeWeapon(${index})">Remover</button>`;
+                weaponList.appendChild(weaponItem);
+            });
+        }
+
+        function clearWeaponInputs() {
+            document.getElementById('weaponDescription').value = '';
+            document.getElementById('weaponBonus').value = '';
+            document.getElementById('weaponCritical').value = '';
+            document.getElementById('weaponType').value = '';
+            document.getElementById('weaponDistance').value = '';
+        }
+
+        function removeWeapon(index) {
+            weapons.splice(index, 1);
+            displayWeapons();
+        }
+
+        /*  ############# 
+
+            CADASTRAR PERICIAS 
+
+            ############# 
+        */
+
+        // TODO: alterar para buscar do campo de modificadores
+        let strengthModifier = 2;
+        let dexterityModifier = 3;
+        let constitutionModifier = 1;
+        let intelligenceModifier = 4;
+        let wisdomModifier = -1;
+        let charismaModifier = 0;
+
+        const possibleSkills = [
+            { name: 'Acrobacia', modifier: 'Destreza' },
+            { name: 'Adestrar Animais', modifier: 'Carisma' },
+            { name: 'Arte da Fuga', modifier: 'Destreza' },
+            { name: 'Atuação', modifier: 'Carisma' },
+            { name: 'Avaliação', modifier: 'Inteligência' },
+            { name: 'Blefar', modifier: 'Carisma' },
+            { name: 'Cavalgar', modifier: 'Destreza' },
+            { name: 'Concentração', modifier: 'Constituição' },
+            { name: 'Conhecimento (Arcano)', modifier: 'Inteligência' },
+            { name: 'Conhecimento (História)', modifier: 'Inteligência' },
+            { name: 'Conhecimento (Geografia)', modifier: 'Inteligência' },
+            { name: 'Conhecimento (Natureza)', modifier: 'Inteligência' },
+            { name: 'Decifrar Escrita', modifier: 'Inteligência' },
+            { name: 'Diplomacia', modifier: 'Carisma' },
+            { name: 'Disfarce', modifier: 'Carisma' },
+            { name: 'Equilíbrio', modifier: 'Destreza' },
+            { name: 'Escalar', modifier: 'Força' },
+            { name: 'Esconder-se', modifier: 'Destreza' },
+            { name: 'Furtividade', modifier: 'Destreza' },
+            { name: 'Identificar Magia', modifier: 'Inteligência' },
+            { name: 'Intimidar', modifier: 'Carisma' },
+            { name: 'Investigar', modifier: 'Inteligência' },
+            { name: 'Lidar com Animais', modifier: 'Carisma' },
+            { name: 'Misticismo', modifier: 'Inteligência' },
+            { name: 'Natação', modifier: 'Força' },
+            { name: 'Observar', modifier: 'Sabedoria' },
+            { name: 'Ouvir', modifier: 'Sabedoria' },
+            { name: 'Procurar', modifier: 'Inteligência' },
+            { name: 'Prestidigitação', modifier: 'Destreza' },
+            { name: 'Primeiros Socorros', modifier: 'Sabedoria' },
+            { name: 'Rastrear', modifier: 'Sabedoria' },
+            { name: 'Sentir Motivação', modifier: 'Sabedoria' },
+            { name: 'Sobrevivência', modifier: 'Sabedoria' },
+            { name: 'Uso de Cordas', modifier: 'Destreza' }
+        ];
+
+        let skillRecords = [];
+
+        window.onload = function() {
+            const skillSelect = document.getElementById('newSkillName');
+
+            possibleSkills.forEach(skill => {
+                const option = document.createElement('option');
+                option.value = skill.name.toLowerCase();  // Valor em minúsculas
+                option.textContent = `${skill.name} (${skill.modifier})`;
+                skillSelect.appendChild(option);
+            });
+
+            skillSelect.addEventListener('change', function() {
+                updateAbilityModifierDisplay(skillSelect.value);
+            });
+        };
+
+        function updateAbilityModifierDisplay(skillName) {
+            const selectedSkill = possibleSkills.find(skill => skill.name.toLowerCase() === skillName);
+            let modifierValue = 0;
+
+            switch (selectedSkill.modifier) {
+                case 'Força':
+                    modifierValue = strengthModifier;
+                    break;
+                case 'Destreza':
+                    modifierValue = dexterityModifier;
+                    break;
+                case 'Constituição':
+                    modifierValue = constitutionModifier;
+                    break;
+                case 'Inteligência':
+                    modifierValue = intelligenceModifier;
+                    break;
+                case 'Sabedoria':
+                    modifierValue = wisdomModifier;
+                    break;
+                case 'Carisma':
+                    modifierValue = charismaModifier;
+                    break;
+                default:
+                    modifierValue = 0;
+            }
+
+            document.getElementById('abilityModifierDisplay').textContent = modifierValue;
+        }
+
+        function addNewSkill() {
+            const skillName = document.getElementById('newSkillName').value;
+            const skillValue = parseInt(document.getElementById('newSkillValue').value) || 0;
+            const abilityModifier = parseInt(document.getElementById('abilityModifierDisplay').textContent);
+
+            const totalSkillValue = skillValue + abilityModifier;
+
+            skillRecords.push({
+                nome: skillName,
+                valor: skillValue,
+                modificador: abilityModifier,
+                total: totalSkillValue
+            });
+
+            displaySkillsList();
+
+            clearSkillForm();
+        }
+
+        function displaySkillsList() {
+            const skillList = document.getElementById('skillList');
+            skillList.innerHTML = '';
+
+            skillRecords.forEach(skill => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `${skill.nome.charAt(0).toUpperCase() + skill.nome.slice(1)}: Valor: ${skill.valor}, Modificador: ${skill.modificador}, Total: ${skill.total}`;
+                skillList.appendChild(listItem);
+            });
+        }
+
+        function toggleSkillsList() {
+            const allSkillsList = document.getElementById('allSkillsList');
+            const isChecked = document.getElementById('toggleSkillsList').checked;
+
+            if (isChecked) {
+                listAllSkills();
+                allSkillsList.style.display = 'block';
+            } else {
+                allSkillsList.style.display = 'none';
+            }
+        }
+
+        function listAllSkills() {
+            const allSkillsList = document.getElementById('allSkillsList');
+            allSkillsList.innerHTML = ''; // Limpa a lista
+
+            possibleSkills.forEach(skill => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `${skill.name} (${skill.modifier})`;
+                allSkillsList.appendChild(listItem);
+            });
+        }
+
+        function clearSkillForm() {
+            document.getElementById('newSkillValue').value = '';
+        }
+
+    </script>
+</body>
+</html>
