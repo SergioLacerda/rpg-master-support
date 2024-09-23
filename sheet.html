@@ -20,7 +20,7 @@
             <button class="tab-link" onclick="openTab(event, 'tab3')">Equipamentos e Inventário</button>
             <button class="tab-link" onclick="openTab(event, 'tab4')">Habilidades de classe</button>
             <button class="tab-link" onclick="openTab(event, 'tab5')">Magias</button>
-
+            <button class="tab-link" onclick="openTab(event, 'tab6')">Dados</button>
         </div>
         
         <div id="tab1" class="tab-content active">
@@ -111,26 +111,26 @@
                 <tbody>
                     <tr>
                         <td>Fortitude</td>
-                        <td><input type="number" id="bonusBaseFortitude" class="resistencia-bonus"></td>
+                        <td><input type="number" id="bonusBaseFortitude" class="resistencia-bonus" oninput="calcularResistenciaFortitude()"></td>
                         <td class="align-center"><span id="modHabilidadeFortitude">0</span></td>
-                        <td><input type="number" id="modMagicoFortitude" class="resistencia-magico"></td>
-                        <td><input type="number" id="outrosFortitude" class="resistencia-outros"></td>
+                        <td><input type="number" id="modMagicoFortitude" class="resistencia-magico" oninput="calcularResistenciaFortitude()"></td>
+                        <td><input type="number" id="outrosFortitude" class="resistencia-outros" oninput="calcularResistenciaFortitude()"></td>
                         <td><input type="number" id="totalFortitude" class="resistencia-total" readonly></td>                            
                     </tr>
                     <tr>
                         <td>Reflexos</td>
-                        <td><input type="number" id="bonusBaseReflexos" class="resistencia-bonus"></td>
+                        <td><input type="number" id="bonusBaseReflexos" class="resistencia-bonus" oninput="calcularResistenciaReflexos()"></td>
                         <td class="align-center"><span id="modHabilidadeReflexos">0</span></td>
-                        <td><input type="number" id="modMagicoReflexos" class="resistencia-magico"></td>
-                        <td><input type="number" id="outrosReflexos" class="resistencia-outros"></td>
+                        <td><input type="number" id="modMagicoReflexos" class="resistencia-magico" oninput="calcularResistenciaReflexos()"></td>
+                        <td><input type="number" id="outrosReflexos" class="resistencia-outros" oninput="calcularResistenciaReflexos()"></td>
                         <td><input type="number" id="totalReflexos" class="resistencia-total" readonly></td>
                     </tr>
                     <tr>
                         <td>Vontade</td>
-                        <td><input type="number" id="bonusBaseVontade" class="resistencia-bonus"></td>
+                        <td><input type="number" id="bonusBaseVontade" class="resistencia-bonus" oninput="calcularResistenciaVontade()"></td>
                         <td class="align-center"><span id="modHabilidadeVontade">0</span></td>
-                        <td><input type="number" id="modMagicoVontade" class="resistencia-magico"></td>
-                        <td><input type="number" id="outrosVontade" class="resistencia-outros"></td>
+                        <td><input type="number" id="modMagicoVontade" class="resistencia-magico" oninput="calcularResistenciaVontade()"></td>
+                        <td><input type="number" id="outrosVontade" class="resistencia-outros" oninput="calcularResistenciaVontade()"></td>
                         <td><input type="number" id="totalVontade" class="resistencia-total" readonly></td>
                     </tr>
                 </tbody>
@@ -213,6 +213,25 @@
             <textarea id="magias" rows="5" placeholder="Lista de magias conhecidas e memorizadas..."></textarea>
         </div>
 
+
+        <div id="tab6" class="tab-content">
+
+            <h4>Exportar dados</h4>
+            <div class="form-group">
+                <button onclick="exportToJson()">Exportar para JSON</button>
+            </div>
+
+            <br>
+
+            <h4>Importar dados</h4>
+            <div class="form-group">
+                <input type="file" id="importJsonFile" accept=".json" style="display: none;" onchange="importFromJson(); updateLabel()"/>
+
+                <button type="button" onclick="document.getElementById('importJsonFile').click()">Carregar arquivo</button>
+            </div>
+        </div>
+
+
     </div>
     
     <script>
@@ -234,64 +253,62 @@
             evt.currentTarget.classList.add('active');
         }
 
+        /*  ############# 
+
+            CADASTRAR ATRIBUTOS BASE
+
+            ############# 
+        */
+
         function calcularModificador(atributoId) {
             const valorAtributo = parseInt(document.getElementById(atributoId).value) || 0;
             const modificador = Math.floor((valorAtributo - 10) / 2);
             
             switch (atributoId) {
                 case 'FOR':
-                    document.getElementById('strengthModifier').textContent = modificador;
-                    document.getElementById('modifierSkillStrength').textContent = modificador;
-
+                    document.getElementById('strengthModifier').textContent = modificador || 0;
                     break;
                 case 'DES':
-                    document.getElementById('dexterityModifier').textContent = modificador;
-                    document.getElementById(`modifierSkillDexterity`).textContent = modificador;
-
-                    document.getElementById('modHabilidadeReflexos').textContent = modificador;
-                    calcularResistencia('Reflexos');
-
+                    document.getElementById('dexterityModifier').textContent = modificador || 0;
+                    document.getElementById('modHabilidadeReflexos').textContent = modificador || 0;
+                    calcularResistenciaReflexos();
                     break;
                 case 'CON':
-                    document.getElementById('constitutionModifier').textContent = modificador;
-                    document.getElementById(`modifierSkillConstitution`).textContent = modificador;
-
-                    document.getElementById('modHabilidadeFortitude').textContent = modificador;
-                    calcularResistencia('Vontade');
-
-                    break;
-                case 'INT':
-                    document.getElementById('IntelligenceModifier').textContent = modificador;
-                    document.getElementById(`modifierSkillIntelligence`).textContent = modificador;
-
+                    document.getElementById('constitutionModifier').textContent = modificador || 0;
+                    document.getElementById('modHabilidadeFortitude').textContent = modificador || 0;
+                    calcularResistenciaFortitude();
                     break;
                 case 'SAB':
-                    document.getElementById('wisdomModifier').textContent = modificador;
-                    document.getElementById(`modifierSkillWisdom`).textContent = modificador;
-
-                    document.getElementById('modHabilidadeVontade').textContent = modificador;
-                    calcularResistencia('Fortitude');
-
-                    break;
-                case 'CAR':
-                    document.getElementById(`modifierSkillCharisma`).textContent = modificador;
-                    document.getElementById('charismaModifier').textContent = modificador;
-
-                    break;
-                default:
+                    document.getElementById('wisdomModifier').textContent = modificador || 0;
+                    document.getElementById('modHabilidadeVontade').textContent = modificador || 0;
+                    calcularResistenciaVontade();
                     break;
             }
         }
 
-		function calcularResistencia(tipo) {
-			// const bonusBase = parseInt(document.getElementById(`bonusBase${tipo}`).value) || 0;
-			// const modHabilidade = parseInt(document.getElementById(`modHabilidade${tipo}`).value) || 0;
-			// const modMagico = parseInt(document.getElementById(`modMagico${tipo}`).value) || 0;
-			// const outros = parseInt(document.getElementById(`outros${tipo}`).value) || 0;
-			// const total = bonusBase + modHabilidade + modMagico + outros;
+        function calcularResistencia(bonusBase, modHabilidade, modMagico, outros, total) {
+            const bonusBaseFinal = parseInt(document.getElementById(bonusBase).value) || 0;
+            const modHabilidadeFinal = parseInt(document.getElementById(modHabilidade).textContent) || 0;
+            const modMagicoFinal = parseInt(document.getElementById(modMagico).value) || 0;
+            const outrosFinal = parseInt(document.getElementById(outros).value) || 0;
+            const totalFinal = bonusBaseFinal + modHabilidadeFinal + modMagicoFinal + outrosFinal;
 
-			// document.getElementById(`total${tipo}`).value = total;
+            document.getElementById(total).value = totalFinal;
+        }
+
+
+        function calcularResistenciaFortitude() {
+            calcularResistencia('bonusBaseFortitude', 'modHabilidadeFortitude', 'modMagicoFortitude', 'outrosFortitude', 'totalFortitude')
 		}
+
+        function calcularResistenciaReflexos() {
+            calcularResistencia('bonusBaseReflexos', 'modHabilidadeReflexos', 'modMagicoReflexos', 'outrosReflexos', 'totalReflexos');
+		}
+
+        function calcularResistenciaVontade() {
+            calcularResistencia('bonusBaseVontade', 'modHabilidadeVontade', 'modMagicoVontade', 'outrosVontade', 'totalVontade');
+		}
+
 
         /*  ############# 
 
@@ -316,6 +333,7 @@
             };
 
             if (weaponDescription && !isNaN(weaponBonus) && weaponCritical && weaponType && !isNaN(weaponDistance)) {
+                
                 weapons.push(weaponDetails);
 
                 displayWeapons();
@@ -492,7 +510,7 @@
 
         function listAllSkills() {
             const allSkillsList = document.getElementById('allSkillsList');
-            allSkillsList.innerHTML = ''; // Limpa a lista
+            allSkillsList.innerHTML = '';
 
             possibleSkills.forEach(skill => {
                 const listItem = document.createElement('li');
@@ -505,6 +523,130 @@
             document.getElementById('newSkillValue').value = '';
         }
 
+        /*  ############# 
+
+            EXPORTAR DADOS
+
+            ############# 
+        */
+
+        function exportToJson() {
+            const data = {
+                nome: document.getElementById("nome").value,
+                classe: document.getElementById("classe").value,
+                nivel: document.getElementById("nivel").value,
+                raca: document.getElementById("raca").value,
+                alinhamento: document.getElementById("alinhamento").value,
+                divindade: document.getElementById("divindade").value,
+                sexo: document.getElementById("sexo").value,
+                idade: document.getElementById("idade").value,
+                atributos: {
+                    forca: document.getElementById("FOR").value,
+                    destreza: document.getElementById("DES").value,
+                    constituicao: document.getElementById("CON").value,
+                    inteligencia: document.getElementById("INT").value,
+                    sabedoria: document.getElementById("SAB").value,
+                    carisma: document.getElementById("CAR").value
+                },
+                resistencias: {
+                    fortitude: {
+                        bonusBase: document.getElementById("bonusBaseFortitude").value,
+                        modMagico: document.getElementById("modMagicoFortitude").value,
+                        outros: document.getElementById("outrosFortitude").value,
+                        total: document.getElementById("totalFortitude").value
+                    },
+                    reflexos: {
+                        bonusBase: document.getElementById("bonusBaseReflexos").value,
+                        modMagico: document.getElementById("modMagicoReflexos").value,
+                        outros: document.getElementById("outrosReflexos").value,
+                        total: document.getElementById("totalReflexos").value
+                    },
+                    vontade: {
+                        bonusBase: document.getElementById("bonusBaseVontade").value,
+                        modMagico: document.getElementById("modMagicoVontade").value,
+                        outros: document.getElementById("outrosVontade").value,
+                        total: document.getElementById("totalVontade").value
+                    }
+                },
+                habilidades: document.getElementById("habilidades").value,
+                magias: document.getElementById("magias").value,
+                equipamentos: document.getElementById("equipamentos").value,
+            };
+
+            const jsonString = JSON.stringify(data, null, 4);
+            const blob = new Blob([jsonString], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "personagem.json";
+            a.click();
+        }
+
+        /*  ############# 
+
+            IMPORTAR DADOS
+
+            ############# 
+        */
+
+    function    importFromJson() {
+        const fileInput = document.getElementById('importJsonFile');
+        const file = fileInput.files[0];
+        
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    preencherFormulario(data);
+                } catch (error) {
+                    alert("Erro ao ler o arquivo JSON. Verifique o formato.");
+                }
+            };
+            reader.readAsText(file);
+        }
+    }
+
+    function preencherFormulario(data) {
+        document.getElementById("nome").value = data.nome || "";
+        document.getElementById("classe").value = data.classe || "";
+        document.getElementById("nivel").value = data.nivel || "";
+        document.getElementById("raca").value = data.raca || "";
+        document.getElementById("alinhamento").value = data.alinhamento || "";
+        document.getElementById("divindade").value = data.divindade || "";
+        document.getElementById("sexo").value = data.sexo || "";
+        document.getElementById("idade").value = data.idade || "";
+
+        if (data.atributos) {
+            document.getElementById("FOR").value = data.atributos.forca || "";
+            document.getElementById("DES").value = data.atributos.destreza || "";
+            document.getElementById("CON").value = data.atributos.constituicao || "";
+            document.getElementById("INT").value = data.atributos.inteligencia || "";
+            document.getElementById("SAB").value = data.atributos.sabedoria || "";
+            document.getElementById("CAR").value = data.atributos.carisma || "";
+        }
+
+        if (data.resistencias) {
+            document.getElementById("bonusBaseFortitude").value = data.resistencias.fortitude.bonusBase || "";
+            document.getElementById("modMagicoFortitude").value = data.resistencias.fortitude.modMagico || "";
+            document.getElementById("outrosFortitude").value = data.resistencias.fortitude.outros || "";
+            document.getElementById("totalFortitude").value = data.resistencias.fortitude.total || "";
+
+            document.getElementById("bonusBaseReflexos").value = data.resistencias.reflexos.bonusBase || "";
+            document.getElementById("modMagicoReflexos").value = data.resistencias.reflexos.modMagico || "";
+            document.getElementById("outrosReflexos").value = data.resistencias.reflexos.outros || "";
+            document.getElementById("totalReflexos").value = data.resistencias.reflexos.total || "";
+
+            document.getElementById("bonusBaseVontade").value = data.resistencias.vontade.bonusBase || "";
+            document.getElementById("modMagicoVontade").value = data.resistencias.vontade.modMagico || "";
+            document.getElementById("outrosVontade").value = data.resistencias.vontade.outros || "";
+            document.getElementById("totalVontade").value = data.resistencias.vontade.total || "";
+        }
+
+        document.getElementById("habilidades").value = data.habilidades || "";
+        document.getElementById("magias").value = data.magias || "";
+        document.getElementById("equipamentos").value = data.equipamentos || "";
+    }
     </script>
 </body>
-</html>
+</html
