@@ -176,22 +176,24 @@
         <div id="tab2" class="tab-content">
             <h3>Cadastrar Perícia</h3>
         
-            <div class="form-group">
-                <label for="newSkillName">Nome da Perícia:</label>
-                <select id="newSkillName">
-                </select>
+            <div class="tab-box">
+                <div class="form-group">
+                    <label for="newSkillName">Nome da Perícia:</label>
+                    <select id="newSkillName" onchange="updateAbilityModifierDisplay(this.value)"></select>
+                </div>
+            
+                <div class="form-group">
+                    <label for="newSkillValue">Valor da Perícia:</label>
+                    <input type="number" id="newSkillValue" placeholder="Ex: 5">
+                </div>
+            
+                <div class="form-group">
+                    <small>Modificador: <span id="abilityModifierDisplay">0</span></small>
+                </div>
+            
+                <button onclick="addNewSkill()">Adicionar Perícia</button>
             </div>
-        
-            <div class="form-group">
-                <label for="newSkillValue">Valor da Perícia:</label>
-                <input type="number" id="newSkillValue" placeholder="Ex: 5">
-            </div>
-        
-            <div class="form-group">
-                <small>Modificador: <span id="abilityModifierDisplay">0</span></small>
-            </div>
-        
-            <button onclick="addNewSkill()">Adicionar Perícia</button>
+            
         
             <h3>Perícias Cadastradas</h3>
             <ul id="skillList"></ul>
@@ -272,6 +274,7 @@
     
     <script>
         const weapons = [];
+        const skillRecords = [];
 
         function openTab(evt, tabId) {
             const tabContents = document.querySelectorAll('.tab-content');
@@ -345,78 +348,12 @@
             calcularResistencia('bonusBaseVontade', 'modHabilidadeVontade', 'modMagicoVontade', 'outrosVontade', 'totalVontade');
 		}
 
-
-        /*  ############# 
-
-            CADASTRAR ARMAS 
-
-            ############# 
-        */
-
-        function addWeapon() {
-            const weaponDescription = document.getElementById('weaponDescription').value;
-            const weaponBonus = parseInt(document.getElementById('weaponBonus').value);
-            const weaponCritical = document.getElementById('weaponCritical').value;
-            const weaponType = document.getElementById('weaponType').value;
-            const weaponDistance = parseInt(document.getElementById('weaponDistance').value);
-
-            const weaponDetails = {
-                descricao: weaponDescription,
-                bonus: weaponBonus,
-                critico: weaponCritical,
-                tipo: weaponType,
-                distancia: weaponDistance
-            };
-
-            if (weaponDescription && !isNaN(weaponBonus) && weaponCritical && weaponType && !isNaN(weaponDistance)) {
-                
-                weapons.push(weaponDetails);
-
-                displayWeapons();
-
-                clearWeaponInputs();
-            }
-        }
-
-        function displayWeapons() {
-            const weaponList = document.getElementById('weaponList');
-            weaponList.innerHTML = '';
-
-            weapons.forEach((weapon, index) => {
-                const weaponItem = document.createElement('li');
-                weaponItem.innerHTML = `${weapon.descricao} - Bônus: ${weapon.bonus}, Crítico: ${weapon.critico}, Tipo: ${weapon.tipo}, Distância: ${weapon.distancia} 
-                                        <button class="removeWeapon" onclick="removeWeapon(${index})">Remover</button>`;
-                weaponList.appendChild(weaponItem);
-            });
-        }
-
-        function clearWeaponInputs() {
-            document.getElementById('weaponDescription').value = '';
-            document.getElementById('weaponBonus').value = '';
-            document.getElementById('weaponCritical').value = '';
-            document.getElementById('weaponType').value = '';
-            document.getElementById('weaponDistance').value = '';
-        }
-
-        function removeWeapon(index) {
-            weapons.splice(index, 1);
-            displayWeapons();
-        }
-
         /*  ############# 
 
             CADASTRAR PERICIAS 
 
             ############# 
         */
-
-        // TODO: alterar para buscar do campo de modificadores
-        let strengthModifier = 2;
-        let dexterityModifier = 3;
-        let constitutionModifier = 1;
-        let intelligenceModifier = 4;
-        let wisdomModifier = -1;
-        let charismaModifier = 0;
 
         const possibleSkills = [
             { name: 'Acrobacia', modifier: 'Destreza' },
@@ -455,45 +392,42 @@
             { name: 'Uso de Cordas', modifier: 'Destreza' }
         ];
 
-        let skillRecords = [];
+        const skillSelect = document.getElementById('newSkillName');
 
-        window.onload = function() {
-            const skillSelect = document.getElementById('newSkillName');
+        const option = document.createElement('option');
+        option.value = '';
+        option.textContent = '';
+        skillSelect.appendChild(option);
 
-            possibleSkills.forEach(skill => {
-                const option = document.createElement('option');
-                option.value = skill.name.toLowerCase();  // Valor em minúsculas
-                option.textContent = `${skill.name} (${skill.modifier})`;
-                skillSelect.appendChild(option);
-            });
-
-            skillSelect.addEventListener('change', function() {
-                updateAbilityModifierDisplay(skillSelect.value);
-            });
-        };
+        possibleSkills.forEach(skill => {
+            const option = document.createElement('option');
+            option.value = skill.name;
+            option.textContent = skill.name;
+            skillSelect.appendChild(option);
+        });
 
         function updateAbilityModifierDisplay(skillName) {
-            const selectedSkill = possibleSkills.find(skill => skill.name.toLowerCase() === skillName);
+            const selectedSkill = possibleSkills.find(skill => skill.name.toLowerCase() === skillName.toLowerCase());
             let modifierValue = 0;
 
             switch (selectedSkill.modifier) {
                 case 'Força':
-                    modifierValue = strengthModifier;
+                    modifierValue = document.getElementById('strengthModifier').textContent || 0;
                     break;
                 case 'Destreza':
-                    modifierValue = dexterityModifier;
+                    modifierValue = document.getElementById('dexterityModifier').textContent || 0;
                     break;
                 case 'Constituição':
-                    modifierValue = constitutionModifier;
+                    modifierValue = document.getElementById('constitutionModifier').textContent || 0;
                     break;
                 case 'Inteligência':
-                    modifierValue = intelligenceModifier;
+                    modifierValue = document.getElementById('intelligenceModifier').textContent || 0;
                     break;
                 case 'Sabedoria':
-                    modifierValue = wisdomModifier;
+                    modifierValue = document.getElementById('wisdomModifier').textContent || 0;
                     break;
                 case 'Carisma':
-                    modifierValue = charismaModifier;
+                    modifierValue = document.getElementById('charismaModifier').textContent || 0; 
                     break;
                 default:
                     modifierValue = 0;
@@ -556,7 +490,65 @@
         }
 
         function clearSkillForm() {
+            document.getElementById('newSkillName').value = '';
             document.getElementById('newSkillValue').value = '';
+        }
+
+        /*  ############# 
+
+            CADASTRAR ARMAS 
+
+            ############# 
+        */
+
+        function addWeapon() {
+            const weaponDescription = document.getElementById('weaponDescription').value;
+            const weaponBonus = parseInt(document.getElementById('weaponBonus').value);
+            const weaponCritical = document.getElementById('weaponCritical').value;
+            const weaponType = document.getElementById('weaponType').value;
+            const weaponDistance = parseInt(document.getElementById('weaponDistance').value);
+
+            const weaponDetails = {
+                descricao: weaponDescription,
+                bonus: weaponBonus,
+                critico: weaponCritical,
+                tipo: weaponType,
+                distancia: weaponDistance
+            };
+
+            if (weaponDescription && !isNaN(weaponBonus) && weaponCritical && weaponType && !isNaN(weaponDistance)) {
+                
+                weapons.push(weaponDetails);
+
+                displayWeapons();
+
+                clearWeaponInputs();
+            }
+        }
+
+        function displayWeapons() {
+            const weaponList = document.getElementById('weaponList');
+            weaponList.innerHTML = '';
+
+            weapons.forEach((weapon, index) => {
+                const weaponItem = document.createElement('li');
+                weaponItem.innerHTML = `${weapon.descricao} - Bônus: ${weapon.bonus}, Crítico: ${weapon.critico}, Tipo: ${weapon.tipo}, Distância: ${weapon.distancia} 
+                                        <button class="removeWeapon" onclick="removeWeapon(${index})">Remover</button>`;
+                weaponList.appendChild(weaponItem);
+            });
+        }
+
+        function clearWeaponInputs() {
+            document.getElementById('weaponDescription').value = '';
+            document.getElementById('weaponBonus').value = '';
+            document.getElementById('weaponCritical').value = '';
+            document.getElementById('weaponType').value = '';
+            document.getElementById('weaponDistance').value = '';
+        }
+
+        function removeWeapon(index) {
+            weapons.splice(index, 1);
+            displayWeapons();
         }
 
         /*  ############# 
