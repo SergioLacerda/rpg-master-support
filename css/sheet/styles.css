@@ -131,3 +131,13 @@ td {
     width: 10%;
     text-align: center;
 }
+.spanModifier {
+    color: green;
+}
+.spanRace {
+    color: blue;
+}
+.spanTotal {
+    color: red;
+    font-weight: bold;
+}

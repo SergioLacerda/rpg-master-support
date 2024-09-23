@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +14,7 @@
 <body>
     <div class="container">
         <h1>Ficha de Personagem - D&D 3.5</h1>
-        
+
         <div class="tabs">
             <button class="tab-link active" onclick="openTab(event, 'tab1')">Informações Básicas</button>
             <button class="tab-link" onclick="openTab(event, 'tab2')">Perícias</button>
@@ -22,7 +23,7 @@
             <button class="tab-link" onclick="openTab(event, 'tab5')">Magias</button>
             <button class="tab-link" onclick="openTab(event, 'tab6')">Dados</button>
         </div>
-        
+
         <div id="tab1" class="tab-content active">
             <div class="grid-4">
                 <div>
@@ -42,9 +43,9 @@
                 </div>
                 <div>
                     <label for="raca">Raça</label>
-                    <select id="raca">
-                        <option value="Humano">Humano</option>
+                    <select id="raca" onchange="updateRacialModifier(this.value)">">
                         <option value="">Selecione</option>
+                        <option value="Humano">Humano</option>
                         <option value="Anão">Anão</option>
                         <option value="Elfo">Elfo</option>
                         <option value="Gnomo">Gnomo</option>
@@ -101,38 +102,74 @@
                 <div>
                     <label for="for">Força</label>
                     <input type="number" id="FOR" placeholder="10" oninput="calcularModificador('FOR')">
-                    <small>Modificador: <span id="strengthModifier">0</span></small>
+                    <small>Mod. Pericia:<span id="strengthSkillModifier" class="spanModifier">0</span></small>
+                    <br>
+                    <small>--<span id="nodeDividerModifier"></span></small>
+                    <br>
+                    <small>Mod. Racial: <span id="strengthRaceModifier" class="spanRace">0</span></small>
+                    <br>
+                    <small>TOTAL: <span id="strengthTotal" class="spanTotal">0</span></small>
                 </div>
                 <div>
                     <label for="des">Destreza</label>
                     <input type="number" id="DES" placeholder="10" oninput="calcularModificador('DES')">
-                    <small>Modificador: <span id="dexterityModifier">0</span></small>
+                    <small>Mod. Pericia:<span id="dexteritySkillModifier">0</span></small>
+                    <br>
+                    <small>--<span id="nodeDividerModifier"></span></small>
+                    <br>
+                    <small>Mod. Racial: <span id="dexterityRaceModifier" class="spanRace">0</span></small>
+                    <br>
+                    <small>TOTAL: <span id="dexterityTotal" class="spanTotal">0</span></small>
                 </div>
                 <div>
                     <label for="con">Constituição</label>
                     <input type="number" id="CON" placeholder="10" oninput="calcularModificador('CON')">
-                    <small>Modificador: <span id="constitutionModifier">0</span></small>
+                    <small>Mod. Pericia:<span id="constitutionSkillModifier">0</span></small>
+                    <br>
+                    <small>--<span id="nodeDividerModifier"></span></small>
+                    <br>
+                    <small>Mod. Racial: <span id="constitutionRaceModifier" class="spanRace">0</span></small>
+                    <br>
+                    <small>TOTAL: <span id="constitutionTotal" class="spanTotal">0</span></small>
                 </div>
                 <div>
                     <label for="int">Inteligência</label>
                     <input type="number" id="INT" placeholder="10" oninput="calcularModificador('INT')">
-                    <small>Modificador: <span id="IntelligenceModifier">0</span></small>
+                    <small>Mod. Pericia:<span id="intelligenceSkillModifier">0</span></small>
+                    <br>
+                    <small>--<span id="nodeDividerModifier"></span></small>
+                    <br>
+                    <small>Mod. Racial: <span id="intelligenceRaceModifier" class="spanRace">0</span></small>
+                    <br>
+                    <small>TOTAL: <span id="intelligenceTotal" class="spanTotal">0</span></small>
                 </div>
                 <div>
                     <label for="sab">Sabedoria</label>
                     <input type="number" id="SAB" placeholder="10" oninput="calcularModificador('SAB')">
-                    <small>Modificador: <span id="wisdomModifier">0</span></small>
+                    <small>Mod. Pericia:<span id="wisdomSkillModifier">0</span></small>
+                    <br>
+                    <small>--<span id="nodeDividerModifier"></span></small>
+                    <br>
+                    <small>Mod. Racial: <span id="wisdomRaceModifier" class="spanRace">0</span></small>
+                    <br>
+                    <small>TOTAL: <span id="wisdomTotal" class="spanTotal">0</span></small>
                 </div>
                 <div>
                     <label for="car">Carisma</label>
                     <input type="number" id="CAR" placeholder="10" oninput="calcularModificador('CAR')">
-                    <small>Modificador: <span id="charismaModifier">0</span></small>
+                    <small>Mod. Pericia:<span id="charismaSkillModifier">0</span></small>
+                    <br>
+                    <small>--<span id="nodeDividerModifier"></span></small>
+                    <br>
+                    <small>Mod. Racial: <span id="charismaRaceModifier" class="spanRace">0</span></small>
+                    <br>
+                    <small>TOTAL: <span id="charismaTotal" class="spanTotal">0</span></small>
                 </div>
             </div>
 
 
             <h2>Resistências</h2>
-            
+
             <table>
                 <thead>
                     <tr>
@@ -147,26 +184,35 @@
                 <tbody>
                     <tr>
                         <td>Fortitude</td>
-                        <td><input type="number" id="bonusBaseFortitude" class="resistencia-bonus" oninput="calcularResistenciaFortitude()"></td>
+                        <td><input type="number" id="bonusBaseFortitude" class="resistencia-bonus"
+                                oninput="calcularResistenciaFortitude()"></td>
                         <td class="align-center"><span id="modHabilidadeFortitude">0</span></td>
-                        <td><input type="number" id="modMagicoFortitude" class="resistencia-magico" oninput="calcularResistenciaFortitude()"></td>
-                        <td><input type="number" id="outrosFortitude" class="resistencia-outros" oninput="calcularResistenciaFortitude()"></td>
-                        <td><input type="number" id="totalFortitude" class="resistencia-total" readonly></td>                            
+                        <td><input type="number" id="modMagicoFortitude" class="resistencia-magico"
+                                oninput="calcularResistenciaFortitude()"></td>
+                        <td><input type="number" id="outrosFortitude" class="resistencia-outros"
+                                oninput="calcularResistenciaFortitude()"></td>
+                        <td><input type="number" id="totalFortitude" class="resistencia-total" readonly></td>
                     </tr>
                     <tr>
                         <td>Reflexos</td>
-                        <td><input type="number" id="bonusBaseReflexos" class="resistencia-bonus" oninput="calcularResistenciaReflexos()"></td>
+                        <td><input type="number" id="bonusBaseReflexos" class="resistencia-bonus"
+                                oninput="calcularResistenciaReflexos()"></td>
                         <td class="align-center"><span id="modHabilidadeReflexos">0</span></td>
-                        <td><input type="number" id="modMagicoReflexos" class="resistencia-magico" oninput="calcularResistenciaReflexos()"></td>
-                        <td><input type="number" id="outrosReflexos" class="resistencia-outros" oninput="calcularResistenciaReflexos()"></td>
+                        <td><input type="number" id="modMagicoReflexos" class="resistencia-magico"
+                                oninput="calcularResistenciaReflexos()"></td>
+                        <td><input type="number" id="outrosReflexos" class="resistencia-outros"
+                                oninput="calcularResistenciaReflexos()"></td>
                         <td><input type="number" id="totalReflexos" class="resistencia-total" readonly></td>
                     </tr>
                     <tr>
                         <td>Vontade</td>
-                        <td><input type="number" id="bonusBaseVontade" class="resistencia-bonus" oninput="calcularResistenciaVontade()"></td>
+                        <td><input type="number" id="bonusBaseVontade" class="resistencia-bonus"
+                                oninput="calcularResistenciaVontade()"></td>
                         <td class="align-center"><span id="modHabilidadeVontade">0</span></td>
-                        <td><input type="number" id="modMagicoVontade" class="resistencia-magico" oninput="calcularResistenciaVontade()"></td>
-                        <td><input type="number" id="outrosVontade" class="resistencia-outros" oninput="calcularResistenciaVontade()"></td>
+                        <td><input type="number" id="modMagicoVontade" class="resistencia-magico"
+                                oninput="calcularResistenciaVontade()"></td>
+                        <td><input type="number" id="outrosVontade" class="resistencia-outros"
+                                oninput="calcularResistenciaVontade()"></td>
                         <td><input type="number" id="totalVontade" class="resistencia-total" readonly></td>
                     </tr>
                 </tbody>
@@ -175,46 +221,47 @@
 
         <div id="tab2" class="tab-content">
             <h3>Cadastrar Perícia</h3>
-        
+
             <div class="tab-box">
                 <div class="form-group">
                     <label for="newSkillName">Nome da Perícia:</label>
                     <select id="newSkillName" onchange="updateAbilityModifierDisplay(this.value)"></select>
                 </div>
-            
+
                 <div class="form-group">
                     <label for="newSkillValue">Valor da Perícia:</label>
                     <input type="number" id="newSkillValue" placeholder="Ex: 5">
                 </div>
-            
+
                 <div class="form-group">
                     <small>Modificador: <span id="abilityModifierDisplay">0</span></small>
                 </div>
-            
+
                 <button onclick="addNewSkill()">Adicionar Perícia</button>
             </div>
-            
-        
+
+
             <h3>Perícias Cadastradas</h3>
             <ul id="skillList"></ul>
-        
+
             <br>
-        
+
             <div class="form-group">
                 <label>
-                    <input type="checkbox" id="toggleSkillsList" onclick="toggleSkillsList()"> Mostrar todas as perícias possíveis
+                    <input type="checkbox" id="toggleSkillsList" onclick="toggleSkillsList()"> Mostrar todas as perícias
+                    possíveis
                 </label>
             </div>
-        
+
             <ul id="allSkillsList" style="display: none;"></ul>
         </div>
-        
+
 
         <div id="tab3" class="tab-content">
             <textarea id="equipamentos" rows="5" placeholder="Lista de equipamentos e itens..."></textarea>
-        
+
             <h2>Armas de combate</h2>
-        
+
             <div class="grid-6">
                 <div>
                     <label for="weaponDescription">Arma:</label>
@@ -239,7 +286,7 @@
             </div>
 
             <button onclick="addWeapon()">Adicionar <i class="fas fa-user-plus"></i></button>
-        
+
             <ul id="weaponList"></ul>
         </div>
 
@@ -263,15 +310,17 @@
 
             <h4>Importar dados</h4>
             <div class="form-group">
-                <input type="file" id="importJsonFile" accept=".json" style="display: none;" onchange="importFromJson(); updateLabel()"/>
+                <input type="file" id="importJsonFile" accept=".json" style="display: none;"
+                    onchange="importFromJson(); updateLabel()" />
 
-                <button type="button" onclick="document.getElementById('importJsonFile').click()">Carregar arquivo</button>
+                <button type="button" onclick="document.getElementById('importJsonFile').click()">Carregar
+                    arquivo</button>
             </div>
         </div>
 
 
     </div>
-    
+
     <script>
         const weapons = [];
         const skillRecords = [];
@@ -299,30 +348,108 @@
             ############# 
         */
 
-        function calcularModificador(atributoId) {
-            const valorAtributo = parseInt(document.getElementById(atributoId).value) || 0;
-            const modificador = Math.floor((valorAtributo - 10) / 2);
-            
-            switch (atributoId) {
+        function calcularModificador(atributo) {
+            const valorAtributo = parseInt(document.getElementById(atributo).value) || 0;
+            const modificador = valorAtributo > 0 ? Math.floor((valorAtributo - 10) / 2) : 0;
+
+            switch (atributo) {
                 case 'FOR':
-                    document.getElementById('strengthModifier').textContent = modificador || 0;
+                    calculateModifierFinal(valorAtributo, 'strengthRaceModifier', 'strengthTotal');
+
+                    document.getElementById('strengthSkillModifier').textContent = modificador;
+
                     break;
                 case 'DES':
-                    document.getElementById('dexterityModifier').textContent = modificador || 0;
-                    document.getElementById('modHabilidadeReflexos').textContent = modificador || 0;
+                    calculateModifierFinal(valorAtributo, 'dexterityRaceModifier', 'dexterityTotal');
+
+                    document.getElementById('dexteritySkillModifier').textContent = modificador;
+                    document.getElementById('modHabilidadeReflexos').textContent = modificador;
+
                     calcularResistenciaReflexos();
                     break;
                 case 'CON':
-                    document.getElementById('constitutionModifier').textContent = modificador || 0;
-                    document.getElementById('modHabilidadeFortitude').textContent = modificador || 0;
+                    calculateModifierFinal(valorAtributo, 'constitutionRaceModifier', 'constitutionTotal');
+
+                    document.getElementById('constitutionSkillModifier').textContent = modificador;
+                    document.getElementById('modHabilidadeFortitude').textContent = modificador;
+
                     calcularResistenciaFortitude();
                     break;
+                case 'INT':
+                    calculateModifierFinal(valorAtributo, 'intelligenceRaceModifier', 'intelligenceTotal');
+
+                    document.getElementById('intelligenceSkillModifier').textContent = modificador;
+
+                    break;
                 case 'SAB':
-                    document.getElementById('wisdomModifier').textContent = modificador || 0;
-                    document.getElementById('modHabilidadeVontade').textContent = modificador || 0;
+                    calculateModifierFinal(valorAtributo, 'wisdomRaceModifier','wisdomTotal');
+
+                    document.getElementById('wisdomSkillModifier').textContent = modificador;
+                    document.getElementById('modHabilidadeVontade').textContent = modificador;
+
                     calcularResistenciaVontade();
                     break;
+                case 'CAR':
+                    calculateModifierFinal(valorAtributo, 'charismaRaceModifier', 'charismaTotal');
+
+                    document.getElementById('charismaSkillModifier').textContent = modificador;
+
+                    break;
             }
+        }
+
+        function calculateModifierFinal(valorAtributo, raceModifier, attributeTotal){
+            const raceModifierValue = parseInt(document.getElementById(raceModifier).textContent) || 0;
+            document.getElementById(attributeTotal).textContent = Math.floor(valorAtributo + raceModifierValue);
+        }
+
+        function updateRacialModifier(raceName) {
+            switch (raceName) {
+                case 'Humano':
+                    raceModifier(0,0,0,0,0,0);
+                    break;
+                case 'Anão':
+                    raceModifier(0,2,0,0,0,-2);
+                    break;
+                case 'Elfo':
+                    raceModifier(0,-2,2,0,0,0);
+                    break;
+                case 'Gnomo':
+                    raceModifier(-2,0,0,2,0,0);
+                    break;
+                case 'Halfling':
+                    raceModifier(-2,2,0,0,0,0);
+                    break;
+                case 'Meio-Elfo':
+                    raceModifier(0,0,0,0,0,0);
+                    break;
+                case 'Meio-Orc':
+                    raceModifier(2,0,0,-2,0,-2);
+                    break;
+            }
+        }
+
+        function raceModifier(strength, dexterity, constitution, intelligence, wisdom, charisma){
+            document.getElementById('strengthRaceModifier').textContent = strength;
+            document.getElementById('dexterityRaceModifier').textContent = dexterity;
+            document.getElementById('constitutionRaceModifier').textContent = constitution;
+            document.getElementById('intelligenceRaceModifier').textContent = intelligence;
+            document.getElementById('wisdomRaceModifier').textContent = wisdom;
+            document.getElementById('charismaRaceModifier').textContent = charisma;
+
+            atualizarAtributos()
+        }
+
+        function calcularResistenciaFortitude() {
+            calcularResistencia('bonusBaseFortitude', 'modHabilidadeFortitude', 'modMagicoFortitude', 'outrosFortitude', 'totalFortitude')
+        }
+
+        function calcularResistenciaReflexos() {
+            calcularResistencia('bonusBaseReflexos', 'modHabilidadeReflexos', 'modMagicoReflexos', 'outrosReflexos', 'totalReflexos');
+        }
+
+        function calcularResistenciaVontade() {
+            calcularResistencia('bonusBaseVontade', 'modHabilidadeVontade', 'modMagicoVontade', 'outrosVontade', 'totalVontade');
         }
 
         function calcularResistencia(bonusBase, modHabilidade, modMagico, outros, total) {
@@ -334,19 +461,10 @@
 
             document.getElementById(total).value = totalFinal;
         }
-
-
-        function calcularResistenciaFortitude() {
-            calcularResistencia('bonusBaseFortitude', 'modHabilidadeFortitude', 'modMagicoFortitude', 'outrosFortitude', 'totalFortitude')
-		}
-
-        function calcularResistenciaReflexos() {
-            calcularResistencia('bonusBaseReflexos', 'modHabilidadeReflexos', 'modMagicoReflexos', 'outrosReflexos', 'totalReflexos');
-		}
-
-        function calcularResistenciaVontade() {
-            calcularResistencia('bonusBaseVontade', 'modHabilidadeVontade', 'modMagicoVontade', 'outrosVontade', 'totalVontade');
-		}
+        function atualizarAtributos(){
+            const atributos = ['FOR', 'DES', 'CON', 'INT', 'SAB', 'CAR']
+            atributos.forEach(x => calcularModificador(x))
+        }
 
         /*  ############# 
 
@@ -396,14 +514,19 @@
 
         const option = document.createElement('option');
         option.value = '';
-        option.textContent = '';
+        option.textContent = 'Selecione';
         skillSelect.appendChild(option);
 
         possibleSkills.forEach(skill => {
             const option = document.createElement('option');
             option.value = skill.name;
             option.textContent = skill.name;
-            skillSelect.appendChild(option);
+            skillSelect.appendChild(option);document.getElementById('strengthRaceModifier').textContent = 0;
+                    document.getElementById('dexteritySkillModifier').textContent = 0;
+                    document.getElementById('constitutionSkillModifier').textContent = 0;
+                    document.getElementById('intelligenceSkillModifier').textContent = 0;
+                    document.getElementById('wisdomSkillModifier').textContent = 0;
+                    document.getElementById('charismaSkillModifier').textContent = 0;
         });
 
         function updateAbilityModifierDisplay(skillName) {
@@ -412,22 +535,22 @@
 
             switch (selectedSkill.modifier) {
                 case 'Força':
-                    modifierValue = document.getElementById('strengthModifier').textContent || 0;
+                    modifierValue = document.getElementById('strengthSkillModifier').textContent || 0;
                     break;
                 case 'Destreza':
-                    modifierValue = document.getElementById('dexterityModifier').textContent || 0;
+                    modifierValue = document.getElementById('dexteritySkillModifier').textContent || 0;
                     break;
                 case 'Constituição':
-                    modifierValue = document.getElementById('constitutionModifier').textContent || 0;
+                    modifierValue = document.getElementById('constitutionSkillModifier').textContent || 0;
                     break;
                 case 'Inteligência':
-                    modifierValue = document.getElementById('intelligenceModifier').textContent || 0;
+                    modifierValue = document.getElementById('intelligenceSkillModifier').textContent || 0;
                     break;
                 case 'Sabedoria':
-                    modifierValue = document.getElementById('wisdomModifier').textContent || 0;
+                    modifierValue = document.getElementById('wisdomSkillModifier').textContent || 0;
                     break;
                 case 'Carisma':
-                    modifierValue = document.getElementById('charismaModifier').textContent || 0; 
+                    modifierValue = document.getElementById('charismaSkillModifier').textContent || 0;
                     break;
                 default:
                     modifierValue = 0;
@@ -464,7 +587,12 @@
                 listItem.textContent = `${skill.nome.charAt(0).toUpperCase() + skill.nome.slice(1)}: Valor: ${skill.valor}, Modificador: ${skill.modificador}, Total: ${skill.total}`;
                 skillList.appendChild(listItem);
             });
-        }
+        }document.getElementById('strengthRaceModifier').textContent = 0;
+                    document.getElementById('dexteritySkillModifier').textContent = 0;
+                    document.getElementById('constitutionSkillModifier').textContent = 0;
+                    document.getElementById('intelligenceSkillModifier').textContent = 0;
+                    document.getElementById('wisdomSkillModifier').textContent = 0;
+                    document.getElementById('charismaSkillModifier').textContent = 0;
 
         function toggleSkillsList() {
             const allSkillsList = document.getElementById('allSkillsList');
@@ -490,7 +618,7 @@
         }
 
         function clearSkillForm() {
-            document.getElementById('newSkillName').value = '';
+            document.getElementById('newSkillName').value = 'Selecione';
             document.getElementById('newSkillValue').value = '';
         }
 
@@ -517,7 +645,7 @@
             };
 
             if (weaponDescription && !isNaN(weaponBonus) && weaponCritical && weaponType && !isNaN(weaponDistance)) {
-                
+
                 weapons.push(weaponDetails);
 
                 displayWeapons();
@@ -617,64 +745,65 @@
             ############# 
         */
 
-    function    importFromJson() {
-        const fileInput = document.getElementById('importJsonFile');
-        const file = fileInput.files[0];
-        
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    preencherFormulario(data);
-                } catch (error) {
-                    alert("Erro ao ler o arquivo JSON. Verifique o formato.");
-                }
-            };
-            reader.readAsText(file);
-        }
-    }
+        function importFromJson() {
+            const fileInput = document.getElementById('importJsonFile');
+            const file = fileInput.files[0];
 
-    function preencherFormulario(data) {
-        document.getElementById("nome").value = data.nome || "";
-        document.getElementById("classe").value = data.classe || "";
-        document.getElementById("nivel").value = data.nivel || "";
-        document.getElementById("raca").value = data.raca || "";
-        document.getElementById("alinhamento").value = data.alinhamento || "";
-        document.getElementById("divindade").value = data.divindade || "";
-        document.getElementById("sexo").value = data.sexo || "";
-        document.getElementById("idade").value = data.idade || "";
-
-        if (data.atributos) {
-            document.getElementById("FOR").value = data.atributos.forca || "";
-            document.getElementById("DES").value = data.atributos.destreza || "";
-            document.getElementById("CON").value = data.atributos.constituicao || "";
-            document.getElementById("INT").value = data.atributos.inteligencia || "";
-            document.getElementById("SAB").value = data.atributos.sabedoria || "";
-            document.getElementById("CAR").value = data.atributos.carisma || "";
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        preencherFormulario(data);
+                    } catch (error) {
+                        alert("Erro ao ler o arquivo JSON. Verifique o formato.");
+                    }
+                };
+                reader.readAsText(file);
+            }
         }
 
-        if (data.resistencias) {
-            document.getElementById("bonusBaseFortitude").value = data.resistencias.fortitude.bonusBase || "";
-            document.getElementById("modMagicoFortitude").value = data.resistencias.fortitude.modMagico || "";
-            document.getElementById("outrosFortitude").value = data.resistencias.fortitude.outros || "";
-            document.getElementById("totalFortitude").value = data.resistencias.fortitude.total || "";
+        function preencherFormulario(data) {
+            document.getElementById("nome").value = data.nome || "";
+            document.getElementById("classe").value = data.classe || "";
+            document.getElementById("nivel").value = data.nivel || "";
+            document.getElementById("raca").value = data.raca || "";
+            document.getElementById("alinhamento").value = data.alinhamento || "";
+            document.getElementById("divindade").value = data.divindade || "";
+            document.getElementById("sexo").value = data.sexo || "";
+            document.getElementById("idade").value = data.idade || "";
 
-            document.getElementById("bonusBaseReflexos").value = data.resistencias.reflexos.bonusBase || "";
-            document.getElementById("modMagicoReflexos").value = data.resistencias.reflexos.modMagico || "";
-            document.getElementById("outrosReflexos").value = data.resistencias.reflexos.outros || "";
-            document.getElementById("totalReflexos").value = data.resistencias.reflexos.total || "";
+            if (data.atributos) {
+                document.getElementById("FOR").value = data.atributos.forca || "";
+                document.getElementById("DES").value = data.atributos.destreza || "";
+                document.getElementById("CON").value = data.atributos.constituicao || "";
+                document.getElementById("INT").value = data.atributos.inteligencia || "";
+                document.getElementById("SAB").value = data.atributos.sabedoria || "";
+                document.getElementById("CAR").value = data.atributos.carisma || "";
+            }
 
-            document.getElementById("bonusBaseVontade").value = data.resistencias.vontade.bonusBase || "";
-            document.getElementById("modMagicoVontade").value = data.resistencias.vontade.modMagico || "";
-            document.getElementById("outrosVontade").value = data.resistencias.vontade.outros || "";
-            document.getElementById("totalVontade").value = data.resistencias.vontade.total || "";
+            if (data.resistencias) {
+                document.getElementById("bonusBaseFortitude").value = data.resistencias.fortitude.bonusBase || "";
+                document.getElementById("modMagicoFortitude").value = data.resistencias.fortitude.modMagico || "";
+                document.getElementById("outrosFortitude").value = data.resistencias.fortitude.outros || "";
+                document.getElementById("totalFortitude").value = data.resistencias.fortitude.total || "";
+
+                document.getElementById("bonusBaseReflexos").value = data.resistencias.reflexos.bonusBase || "";
+                document.getElementById("modMagicoReflexos").value = data.resistencias.reflexos.modMagico || "";
+                document.getElementById("outrosReflexos").value = data.resistencias.reflexos.outros || "";
+                document.getElementById("totalReflexos").value = data.resistencias.reflexos.total || "";
+
+                document.getElementById("bonusBaseVontade").value = data.resistencias.vontade.bonusBase || "";
+                document.getElementById("modMagicoVontade").value = data.resistencias.vontade.modMagico || "";
+                document.getElementById("outrosVontade").value = data.resistencias.vontade.outros || "";
+                document.getElementById("totalVontade").value = data.resistencias.vontade.total || "";
+            }
+
+            document.getElementById("habilidades").value = data.habilidades || "";
+            document.getElementById("magias").value = data.magias || "";
+            document.getElementById("equipamentos").value = data.equipamentos || "";
         }
-
-        document.getElementById("habilidades").value = data.habilidades || "";
-        document.getElementById("magias").value = data.magias || "";
-        document.getElementById("equipamentos").value = data.equipamentos || "";
-    }
     </script>
 </body>
+
 </html
