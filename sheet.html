@@ -348,59 +348,60 @@
             ############# 
         */
 
+        function atualizarAtributos(){
+            const atributos = ['FOR', 'DES', 'CON', 'INT', 'SAB', 'CAR']
+            atributos.forEach(x => calcularModificador(x))
+
+            atualizarResistencias()
+        }
+
         function calcularModificador(atributo) {
             const valorAtributo = parseInt(document.getElementById(atributo).value) || 0;
-            const modificador = valorAtributo > 0 ? Math.floor((valorAtributo - 10) / 2) : 0;
 
             switch (atributo) {
                 case 'FOR':
-                    calculateModifierFinal(valorAtributo, 'strengthRaceModifier', 'strengthTotal');
-
-                    document.getElementById('strengthSkillModifier').textContent = modificador;
-
+                    calculateModifierFinal(valorAtributo, 'strengthRaceModifier', 'strengthSkillModifier', 'strengthTotal');
                     break;
                 case 'DES':
-                    calculateModifierFinal(valorAtributo, 'dexterityRaceModifier', 'dexterityTotal');
+                    calculateModifierFinal(valorAtributo, 'dexterityRaceModifier', 'dexteritySkillModifier', 'dexterityTotal');
 
-                    document.getElementById('dexteritySkillModifier').textContent = modificador;
-                    document.getElementById('modHabilidadeReflexos').textContent = modificador;
-
+                    const modificadorReflexo = parseInt(document.getElementById('dexteritySkillModifier').textContent) || 0;
+                    document.getElementById('modHabilidadeReflexos').textContent = modificadorReflexo;
                     calcularResistenciaReflexos();
                     break;
                 case 'CON':
-                    calculateModifierFinal(valorAtributo, 'constitutionRaceModifier', 'constitutionTotal');
+                    calculateModifierFinal(valorAtributo, 'constitutionRaceModifier', 'constitutionSkillModifier', 'constitutionTotal');
 
-                    document.getElementById('constitutionSkillModifier').textContent = modificador;
-                    document.getElementById('modHabilidadeFortitude').textContent = modificador;
-
+                    const modificadorFortitude = parseInt(document.getElementById('constitutionSkillModifier').textContent) || 0;
+                    document.getElementById('modHabilidadeFortitude').textContent = modificadorFortitude;
                     calcularResistenciaFortitude();
                     break;
                 case 'INT':
-                    calculateModifierFinal(valorAtributo, 'intelligenceRaceModifier', 'intelligenceTotal');
-
-                    document.getElementById('intelligenceSkillModifier').textContent = modificador;
+                    calculateModifierFinal(valorAtributo, 'intelligenceRaceModifier', 'intelligenceSkillModifier', 'intelligenceTotal');
 
                     break;
                 case 'SAB':
-                    calculateModifierFinal(valorAtributo, 'wisdomRaceModifier','wisdomTotal');
+                    calculateModifierFinal(valorAtributo, 'wisdomRaceModifier', 'wisdomSkillModifier', 'wisdomTotal');
 
-                    document.getElementById('wisdomSkillModifier').textContent = modificador;
-                    document.getElementById('modHabilidadeVontade').textContent = modificador;
-
+                    const modificadorVontade = parseInt(document.getElementById('wisdomSkillModifier').textContent) || 0;
+                    document.getElementById('modHabilidadeVontade').textContent = modificadorVontade;
                     calcularResistenciaVontade();
                     break;
                 case 'CAR':
-                    calculateModifierFinal(valorAtributo, 'charismaRaceModifier', 'charismaTotal');
-
-                    document.getElementById('charismaSkillModifier').textContent = modificador;
+                    calculateModifierFinal(valorAtributo, 'charismaRaceModifier', 'charismaSkillModifier', 'charismaTotal');
 
                     break;
             }
         }
 
-        function calculateModifierFinal(valorAtributo, raceModifier, attributeTotal){
+        function calculateModifierFinal(valorAtributo, raceModifier, skillModifier, attributeTotal){
             const raceModifierValue = parseInt(document.getElementById(raceModifier).textContent) || 0;
-            document.getElementById(attributeTotal).textContent = Math.floor(valorAtributo + raceModifierValue);
+            const finalAttribute = Math.floor(valorAtributo + raceModifierValue);
+            const newModifier = finalAttribute > 0 ? Math.floor((finalAttribute - 10) / 2) : 0;
+
+            document.getElementById(attributeTotal).textContent = finalAttribute
+
+            document.getElementById(skillModifier).textContent = newModifier;
         }
 
         function updateRacialModifier(raceName) {
@@ -409,13 +410,13 @@
                     raceModifier(0,0,0,0,0,0);
                     break;
                 case 'Anão':
-                    raceModifier(0,2,0,0,0,-2);
+                    raceModifier(0,0,2,0,0,-2);
                     break;
                 case 'Elfo':
-                    raceModifier(0,-2,2,0,0,0);
+                    raceModifier(0,2,-2,0,0,0);
                     break;
                 case 'Gnomo':
-                    raceModifier(-2,0,0,2,0,0);
+                    raceModifier(-2,0,2,0,0,0);
                     break;
                 case 'Halfling':
                     raceModifier(-2,2,0,0,0,0);
@@ -440,6 +441,12 @@
             atualizarAtributos()
         }
 
+        function atualizarResistencias(){
+            calcularResistenciaFortitude()
+            calcularResistenciaReflexos()
+            calcularResistenciaVontade()
+        }
+
         function calcularResistenciaFortitude() {
             calcularResistencia('bonusBaseFortitude', 'modHabilidadeFortitude', 'modMagicoFortitude', 'outrosFortitude', 'totalFortitude')
         }
@@ -460,10 +467,6 @@
             const totalFinal = bonusBaseFinal + modHabilidadeFinal + modMagicoFinal + outrosFinal;
 
             document.getElementById(total).value = totalFinal;
-        }
-        function atualizarAtributos(){
-            const atributos = ['FOR', 'DES', 'CON', 'INT', 'SAB', 'CAR']
-            atributos.forEach(x => calcularModificador(x))
         }
 
         /*  ############# 
