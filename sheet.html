@@ -18,10 +18,11 @@
         <div class="tabs">
             <button class="tab-link active" onclick="openTab(event, 'tab1')">Informações Básicas</button>
             <button class="tab-link" onclick="openTab(event, 'tab2')">Perícias</button>
-            <button class="tab-link" onclick="openTab(event, 'tab3')">Equipamentos e Inventário</button>
-            <button class="tab-link" onclick="openTab(event, 'tab4')">Habilidades de classe</button>
-            <button class="tab-link" onclick="openTab(event, 'tab5')">Magias</button>
-            <button class="tab-link" onclick="openTab(event, 'tab6')">Dados</button>
+            <button class="tab-link" onclick="openTab(event, 'tab3')">Talentos</button>
+            <button class="tab-link" onclick="openTab(event, 'tab4')">Equipamentos e Inventário</button>
+            <button class="tab-link" onclick="openTab(event, 'tab5')">Habilidades de classe</button>
+            <button class="tab-link" onclick="openTab(event, 'tab6')">Magias</button>
+            <button class="tab-link" onclick="openTab(event, 'tab7')">Dados</button>
         </div>
 
         <div id="tab1" class="tab-content active">
@@ -220,6 +221,18 @@
         </div>
 
         <div id="tab2" class="tab-content">
+
+            <div class="tab-box">
+                <div class="form-group">
+                    <label for="skillPointsAvailable">Pontos disponíveis:</label>
+                    <input type="number" id="skillPointsAvailable">
+                    <br>
+                    <small>Modificador racial: <span id="raceSkillModifier">0</span></small>
+                    <br>
+                    <small>Ajustes níveis: <span id="levelSkillModifier">0</span></small>
+                </div>
+            </div>
+
             <h3>Cadastrar Perícia</h3>
 
             <div class="tab-box">
@@ -230,34 +243,58 @@
 
                 <div class="form-group">
                     <label for="newSkillValue">Valor da Perícia:</label>
+
                     <input type="number" id="newSkillValue" placeholder="Ex: 5">
                 </div>
-
+                <br>
                 <div class="form-group">
+                    <button onclick="addNewSkill()">Adicionar Perícia</button>
                     <small>Modificador: <span id="abilityModifierDisplay">0</span></small>
                 </div>
-
-                <button onclick="addNewSkill()">Adicionar Perícia</button>
+                
             </div>
 
-
-            <h3>Perícias Cadastradas</h3>
             <ul id="skillList"></ul>
-
-            <br>
 
             <div class="form-group">
                 <label>
-                    <input type="checkbox" id="toggleSkillsList" onclick="toggleSkillsList()"> Mostrar todas as perícias
-                    possíveis
+                    <input type="checkbox" id="toggleAllSkillsList" onclick="toggleAllSkillsList()">
+                    Mostrar todas as perícias possíveis
                 </label>
             </div>
 
-            <ul id="allSkillsList" style="display: none;"></ul>
+            <ul id="allSkillsList"></ul>
         </div>
 
-
         <div id="tab3" class="tab-content">
+            <h3>Cadastrar Talentos</h3>
+
+            <div class="tab-box">
+                <div class="form-group">
+                    <label for="newFeatName">Nome do Talento:</label>
+                    <select id="newFeatName"></select>
+                </div>
+
+                <br>
+                <div class="form-group">
+                    <button onclick="addNewFeat()">Adicionar Talento</button>
+                </div>
+                
+            </div>
+
+            <ul id="featList"></ul>
+
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="toggleAllFeatsList" onclick="toggleAllFeatsList()">
+                    Mostrar todos os talentos possíveis
+                </label>
+            </div>
+
+            <div id="allFeatsList"></div>
+        </div>
+
+        <div id="tab4" class="tab-content">
             <textarea id="equipamentos" rows="5" placeholder="Lista de equipamentos e itens..."></textarea>
 
             <h2>Armas de combate</h2>
@@ -290,16 +327,16 @@
             <ul id="weaponList"></ul>
         </div>
 
-        <div id="tab4" class="tab-content">
+        <div id="tab5" class="tab-content">
             <textarea id="habilidades" rows="5" placeholder="Descrição das habilidades de classe..."></textarea>
         </div>
 
-        <div id="tab5" class="tab-content">
+        <div id="tab6" class="tab-content">
             <textarea id="magias" rows="5" placeholder="Lista de magias conhecidas e memorizadas..."></textarea>
         </div>
 
 
-        <div id="tab6" class="tab-content">
+        <div id="tab7" class="tab-content">
 
             <h4>Exportar dados</h4>
             <div class="form-group">
@@ -324,6 +361,7 @@
     <script>
         const weapons = [];
         const skillRecords = [];
+        const featRecords = [];
 
         function openTab(evt, tabId) {
             const tabContents = document.querySelectorAll('.tab-content');
@@ -408,6 +446,7 @@
             switch (raceName) {
                 case 'Humano':
                     raceModifier(0,0,0,0,0,0);
+                    raceSkillModifier(4);
                     break;
                 case 'Anão':
                     raceModifier(0,0,2,0,0,-2);
@@ -439,6 +478,11 @@
             document.getElementById('charismaRaceModifier').textContent = charisma;
 
             atualizarAtributos()
+        }
+
+        function raceSkillModifier(bonusValue){
+            const currentValue = document.getElementById('raceSkillModifier').textContent || 0
+            document.getElementById('raceSkillModifier').textContent = Math.floor(currentValue + bonusValue);
         }
 
         function atualizarResistencias(){
@@ -475,6 +519,21 @@
 
             ############# 
         */
+
+        //TODO: lidar com calculo de pontos de pericia
+        function skillAvailablePoints(playerClass, playerRace, intelligenceSkillModifier, ){
+            const basePoints = Math.floor( (classSkillPoints + intelligenceSkillModifier) * 4 ) 
+            const finalPoints = basePoints + raceSkillBonus
+        }
+        
+        function skillAvailablePointsleveling(){
+            const humansBonus = +1 //um para cada novo nivel
+            const humansFirstLevelBonus = +4 //nivel 1
+            const finalPoints = basePoints + raceSkillBonus
+
+            // Perícias de Classe -> 1 ponto pra 1
+            // perícias fora da classe -> 2 pontos pra 1
+        }
 
         const possibleSkills = [
             { name: 'Acrobacia', modifier: 'Destreza' },
@@ -515,21 +574,16 @@
 
         const skillSelect = document.getElementById('newSkillName');
 
-        const option = document.createElement('option');
-        option.value = '';
-        option.textContent = 'Selecione';
-        skillSelect.appendChild(option);
+        const skillOption = document.createElement('option');
+        skillOption.value = '';
+        skillOption.textContent = 'Selecione';
+        skillSelect.appendChild(skillOption);
 
         possibleSkills.forEach(skill => {
             const option = document.createElement('option');
             option.value = skill.name;
             option.textContent = skill.name;
-            skillSelect.appendChild(option);document.getElementById('strengthRaceModifier').textContent = 0;
-                    document.getElementById('dexteritySkillModifier').textContent = 0;
-                    document.getElementById('constitutionSkillModifier').textContent = 0;
-                    document.getElementById('intelligenceSkillModifier').textContent = 0;
-                    document.getElementById('wisdomSkillModifier').textContent = 0;
-                    document.getElementById('charismaSkillModifier').textContent = 0;
+            skillSelect.appendChild(option);
         });
 
         function updateAbilityModifierDisplay(skillName) {
@@ -585,21 +639,24 @@
             const skillList = document.getElementById('skillList');
             skillList.innerHTML = '';
 
+            const title = document.createElement('h3');
+            title.textContent = 'Pericias cadastradas';
+            skillList.before(title);
+
             skillRecords.forEach(skill => {
                 const listItem = document.createElement('li');
-                listItem.textContent = `${skill.nome.charAt(0).toUpperCase() + skill.nome.slice(1)}: Valor: ${skill.valor}, Modificador: ${skill.modificador}, Total: ${skill.total}`;
+                listItem.textContent = 
+                `${skill.nome.charAt(0).toUpperCase() + skill.nome.slice(1)}: 
+                Valor: ${skill.valor}, 
+                Modificador: ${skill.modificador}, 
+                Total: ${skill.total}`;
                 skillList.appendChild(listItem);
             });
-        }document.getElementById('strengthRaceModifier').textContent = 0;
-                    document.getElementById('dexteritySkillModifier').textContent = 0;
-                    document.getElementById('constitutionSkillModifier').textContent = 0;
-                    document.getElementById('intelligenceSkillModifier').textContent = 0;
-                    document.getElementById('wisdomSkillModifier').textContent = 0;
-                    document.getElementById('charismaSkillModifier').textContent = 0;
+        }
 
-        function toggleSkillsList() {
+        function toggleAllSkillsList() {
             const allSkillsList = document.getElementById('allSkillsList');
-            const isChecked = document.getElementById('toggleSkillsList').checked;
+            const isChecked = document.getElementById('toggleAllSkillsList').checked;
 
             if (isChecked) {
                 listAllSkills();
@@ -623,6 +680,171 @@
         function clearSkillForm() {
             document.getElementById('newSkillName').value = 'Selecione';
             document.getElementById('newSkillValue').value = '';
+        }
+
+        /*  ############# 
+
+            CADASTRAR TALENTOS 
+
+            ############# 
+        */
+
+        const possibleFeats = [
+            { grupo: 'Talentos Básicos', 
+              talentos: [
+                'Acrobático',
+                'Ágil',
+                'Perceptivo',
+                'Afinidade com Animais',
+                'Atlético',
+                'Prontidão',
+                'Fortitude Maior',
+                'Vontade de Ferro',
+                'Reflexos Rápidos',
+                'Persuasivo',
+                'Lábia',
+                'Tolerância'] },
+            { grupo: 'Talentos de Combate', 
+              talentos: [
+                'Rachar',
+                'Especialização em Combate',
+                'Reflexos de Combate',
+                'Destruir Armas',
+                'Ataque Poderoso',
+                'Ataque Preciso',
+                'Tiro Certeiro',
+                'Finta em Combate',
+                'Destruir Escudo',
+                'Tiro Longo',
+                'Combater com Duas Armas',
+                'Mira Precisa',
+                'Esquiva',
+                'Acerto Crítico Aprimorado',
+                'Investida Montada',
+                'Ataque em Salto',
+                'Mira Certeira',
+                'Especialização em Arma',
+                'Finta Rápida'] },
+            { grupo: 'Talentos Relacionados a Armas', 
+              talentos: [
+                'Proficiência em Armas Simples',
+                'Proficiência em Armas Comuns',
+                'Foco em Arma',
+                'Especialização em Arma',
+                'Ataque Poderoso',
+                'Ataque Preciso'] },
+            { grupo: 'Talentos Relacionados a Armaduras', 
+              talentos: [
+                'Proficiência em Armaduras Leves',
+                'Proficiência em Armaduras Médias',
+                'Proficiência em Armaduras Pesadas',
+                'Proficiência em Escudo'] },
+            { grupo: 'Talentos de Metamagia', 
+              talentos: [
+                'Magia Ampliada',
+                'Magia Acelerada',
+                'Magia Maximizada',
+                'Magia Estendida',
+                'Magia Imóvel',
+                'Magia Silenciosa',
+                'Magia Sutil',
+                'Magia Empoderada'] },
+            { grupo: 'Talentos Relacionados a Magias', 
+              talentos: [
+                'Conjurar em Combate',
+                'Aprimorar Invocação',
+                'Usar Magia',
+                'Usar Magias em Combate',
+                'Percepção de Magia'] },
+            { grupo: 'Talentos de Criação de Itens', 
+              talentos: [
+                'Criar Armas e Armaduras Mágicas',
+                'Criar Varinha',
+                'Criar Cajado',
+                'Criar Anel Mágico',
+                'Criar Item Maravilhoso',
+                'Criar Pergaminho',
+                'Preparar Poções',
+                'Criar Bastão Mágico'] },
+        ]
+
+        const featSelect = document.getElementById('newFeatName');
+
+        const featOption = document.createElement('option');
+        featOption.value = '';
+        featOption.textContent = 'Selecione';
+        featSelect.appendChild(featOption);
+        
+        possibleFeats.forEach(group => {
+            group.talentos.forEach(feat => {
+                const option = document.createElement('option');
+                option.value = feat;
+                option.textContent = feat;
+                featSelect.appendChild(option);
+            })
+            
+        });
+
+        function addNewFeat() {
+            const featName = document.getElementById('newFeatName').value;
+
+            featRecords.push({ nome: featName });
+
+            displayFeatsList();            
+
+            clearFeatForm();
+        }
+
+        function displayFeatsList() {
+            const featList = document.getElementById('featList');
+            featList.innerHTML = '';
+
+            const title = document.createElement('h3');
+            title.textContent = 'Talentos cadastrados';
+            featList.before(title);
+
+            skillRecords.forEach(skill => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `${skill.nome.charAt(0).toUpperCase()}`;
+                featList.appendChild(listItem);
+            });
+        }
+
+        function toggleAllFeatsList() {
+            const allFeatsList = document.getElementById('allFeatsList');
+            const isChecked = document.getElementById('toggleAllFeatsList').checked;
+
+            if (isChecked) {
+                displayAllFeats();
+                allFeatsList.style.display = 'block';
+            } else {
+                allFeatsList.style.display = 'none';
+            }
+        }
+
+        function displayAllFeats() {
+            const featsListDiv = document.getElementById('allFeatsList');
+            featsListDiv.innerHTML = '';
+
+            possibleFeats.forEach(group => {
+                const groupTitle = document.createElement('h3');
+                groupTitle.textContent = group.grupo;
+                featsListDiv.appendChild(groupTitle);
+
+                const ul = document.createElement('ul');
+                group.talentos.forEach(talento => {
+                    const li = document.createElement('li');
+                    li.textContent = talento;
+                    ul.appendChild(li);
+                });
+                featsListDiv.appendChild(ul);
+            });
+
+            featsListDiv.style.display = 'block';
+        }
+
+        function clearFeatForm() {
+            document.getElementById('newFeatName').value = 'Selecione';
         }
 
         /*  ############# 

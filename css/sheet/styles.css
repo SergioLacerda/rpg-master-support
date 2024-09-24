@@ -86,11 +86,15 @@ td {
     height: 300px;
     overflow-y: auto;
 }
+.feat-list {
+    height: 300px;
+    overflow-y: auto;
+}
 .tab-content {
     display: none;
 }
 .tab-content.active {
-    display: block;
+    display: grid;
 }
 .tabs {
     margin-bottom: 10px;
@@ -128,8 +132,15 @@ td {
     text-align: left;
 }
 .form-group input, .form-group span {
-    width: 10%;
+    width: 20%;
     text-align: center;
+    margin-top: 5px;
+}
+.form-group select {
+    text-align: center;
+}
+.form-group small {
+    margin-left: 10px;
 }
 .spanModifier {
     color: green;
